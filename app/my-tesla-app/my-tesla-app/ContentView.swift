@@ -18,7 +18,6 @@ struct ContentView: View {
                     headerSection
                     cardsSection
                     filterBarSection
-                    pickerSection
                     chartSection1
                     chartSection2
                     tableSection
@@ -38,7 +37,7 @@ struct ContentView: View {
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
             Spacer()
-            Text("Hi, User")
+            Text("Hi, Nick")
                 .foregroundColor(.gray)
                 .font(.system(size: 16))
         }
@@ -87,8 +86,7 @@ struct ContentView: View {
             Button(action: { showStartPicker = true }) {
                 Text(dateString(viewModel.startDate))
                     .foregroundColor(.blue)
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 12)
+                    .frame(maxWidth: .infinity, minHeight: 38)
                     .background(Color(.systemGray5).opacity(0.2))
                     .cornerRadius(8)
             }
@@ -103,8 +101,7 @@ struct ContentView: View {
             Button(action: { showEndPicker = true }) {
                 Text(dateString(viewModel.endDate))
                     .foregroundColor(.blue)
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 12)
+                    .frame(maxWidth: .infinity, minHeight: 38)
                     .background(Color(.systemGray5).opacity(0.2))
                     .cornerRadius(8)
             }
@@ -116,52 +113,6 @@ struct ContentView: View {
                     onSelect: { showEndPicker = false }
                 )
             }
-        }
-        .padding(.horizontal, 2)
-    }
-
-    private func dateString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
-    }
-
-    private var pickerSection: some View {
-        HStack(spacing: 20) {
-            Picker(selection: .constant(0), label:
-                HStack(spacing: 4) {
-                    Image(systemName: "mappin.and.ellipse")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 20, height: 20)
-                    Text("地點")
-                }
-                .foregroundColor(Color.blue)
-            ) {
-                HStack(spacing: 6) {
-                    Image(systemName: "mappin.and.ellipse")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                    Text("地點")
-                }.tag(0)
-                HStack(spacing: 6) {
-                    Image(systemName: "house.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                    Text("家用充電")
-                }.tag(1)
-                HStack(spacing: 6) {
-                    Image(systemName: "bolt.car")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                    Text("超充站")
-                }.tag(2)
-            }
-            .pickerStyle(MenuPickerStyle())
-            .frame(maxWidth: 120)
             Picker(selection: .constant(0), label:
                 HStack(spacing: 4) {
                     Image(systemName: "bolt.fill")
@@ -171,6 +122,7 @@ struct ContentView: View {
                     Text("類型")
                 }
                 .foregroundColor(Color.blue)
+                .frame(maxWidth: .infinity)
             ) {
                 HStack(spacing: 6) {
                     Image(systemName: "bolt.fill")
@@ -195,10 +147,18 @@ struct ContentView: View {
                 }.tag(2)
             }
             .pickerStyle(MenuPickerStyle())
-            .frame(maxWidth: 120)
+            .frame(maxWidth: .infinity, minHeight: 38)
         }
         .padding(.horizontal, 2)
     }
+
+    private func dateString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+
+    // ...已移除地點下拉，類型下拉已合併至 filterBarSection...
 
     private var chartSection1: some View {
         VStack(alignment: .leading, spacing: 8) {
