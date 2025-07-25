@@ -213,31 +213,51 @@ struct ContentView: View {
                     .foregroundColor(.gray)
                     .padding()
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
+                GeometryReader { geometry in
+                    let totalWidth = geometry.size.width - 16 // 減去 padding
+                    let dateWidth = totalWidth * 0.3     // 30% 給日期
+                    let numberWidth = totalWidth * 0.25  // 25% 給度數
+                    let priceWidth = totalWidth * 0.3    // 30% 給費用
+                    let typeWidth = totalWidth * 0.15    // 15% 給類型
+                    
                     VStack(alignment: .leading, spacing: 0) {
-                        HStack {
-                            Text("日期").frame(width: 80)
-                            Text("度數").frame(width: 80)
-                            Text("費用").frame(width: 90)
-                            Text("類型").frame(width: 60)
+                        HStack(spacing: 0) {
+                            Text("日期")
+                                .frame(width: dateWidth, alignment: .leading)
+                            Text("度數")
+                                .frame(width: numberWidth, alignment: .center)
+                            Text("費用")
+                                .frame(width: priceWidth, alignment: .center)
+                            Text("類型")
+                                .frame(width: typeWidth, alignment: .center)
                         }
                         .foregroundColor(.gray)
                         .font(.system(size: 14, weight: .medium))
-                        .padding(.vertical, 4)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 8)
                         .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                        
                         ForEach(Array(viewModel.logsFiltered.enumerated()), id: \.element.id) { i, log in
-                            HStack {
-                                Text(shortDate(log.date)).frame(width: 80)
-                                Text(log.chargedKWh ?? "").frame(width: 80)
-                                Text("$\(log.totalCost ?? "")").frame(width: 90)
-                                Text(typeDisplayName(log.chargeType)).frame(width: 60)
+                            HStack(spacing: 0) {
+                                Text(shortDate(log.date))
+                                    .frame(width: dateWidth, alignment: .leading)
+                                Text(log.chargedKWh ?? "")
+                                    .frame(width: numberWidth, alignment: .center)
+                                Text("$\(log.totalCost ?? "")")
+                                    .frame(width: priceWidth, alignment: .center)
+                                Text(typeDisplayName(log.chargeType))
+                                    .frame(width: typeWidth, alignment: .center)
                             }
                             .font(.system(size: 14))
                             .foregroundColor(.white)
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 8)
                             .background(i % 2 == 0 ? Color(red: 35/255, green: 38/255, blue: 47/255) : Color(red: 27/255, green: 29/255, blue: 35/255))
                         }
                     }
+                    .cornerRadius(12)
                 }
+                .frame(height: CGFloat(viewModel.logsFiltered.count * 40 + 50)) // 動態高度
                 .cornerRadius(12)
             }
         }
