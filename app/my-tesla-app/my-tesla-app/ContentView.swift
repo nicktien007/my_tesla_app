@@ -79,28 +79,80 @@ struct ContentView: View {
         }
     }
 
+    @State private var showStartPicker = false
+    @State private var showEndPicker = false
+
     private var filterBarSection: some View {
         HStack(spacing: 8) {
-            DatePicker(
-                "開始日期",
-                selection: $viewModel.startDate,
-                in: ...viewModel.endDate,
-                displayedComponents: [.date]
-            )
-            .labelsHidden()
-            .accentColor(.blue)
-            .frame(maxWidth: 140)
-            DatePicker(
-                "結束日期",
-                selection: $viewModel.endDate,
-                in: viewModel.startDate...Date(),
-                displayedComponents: [.date]
-            )
-            .labelsHidden()
-            .accentColor(.blue)
-            .frame(maxWidth: 140)
+            Button(action: { showStartPicker = true }) {
+                Text(dateString(viewModel.startDate))
+                    .foregroundColor(.blue)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 12)
+                    .background(Color(.systemGray5).opacity(0.2))
+                    .cornerRadius(8)
+            }
+            .sheet(isPresented: $showStartPicker) {
+                DatePickerSheet(
+                    title: "選擇開始日期",
+                    date: $viewModel.startDate,
+                    range: Date.distantPast...viewModel.endDate,
+                    onSelect: { showStartPicker = false }
+                )
+            }
+            Button(action: { showEndPicker = true }) {
+                Text(dateString(viewModel.endDate))
+                    .foregroundColor(.blue)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 12)
+                    .background(Color(.systemGray5).opacity(0.2))
+                    .cornerRadius(8)
+            }
+            .sheet(isPresented: $showEndPicker) {
+                DatePickerSheet(
+                    title: "選擇結束日期",
+                    date: $viewModel.endDate,
+                    range: viewModel.startDate...Date(),
+                    onSelect: { showEndPicker = false }
+                )
+            }
         }
         .padding(.horizontal, 2)
+    }
+
+// 自訂 DatePickerSheet，選到日期自動 dismiss
+struct DatePickerSheet: View {
+    let title: String
+    @Binding var date: Date
+    var range: ClosedRange<Date>?
+    var onSelect: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack {
+            DatePicker(title, selection: Binding(
+                get: { date },
+                set: { newValue in
+                    date = newValue
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        onSelect()
+                        dismiss()
+                    }
+                }
+            ), in: range ?? Date.distantPast...Date.distantFuture, displayedComponents: [.date])
+                .datePickerStyle(.graphical)
+                .labelsHidden()
+                .padding()
+        }
+        .presentationDetents([.medium])
+    }
+}
+
+    private func dateString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
     }
 
     private var pickerSection: some View {

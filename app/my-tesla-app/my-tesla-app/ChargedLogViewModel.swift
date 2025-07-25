@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-
 class ChargedLogViewModel: ObservableObject {
     @Published var logs: [ChargedLogEntry] = []
     @Published var isLoading = false

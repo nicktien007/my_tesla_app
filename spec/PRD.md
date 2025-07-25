@@ -12,56 +12,49 @@
 - 支援離線快取最近一次資料。
 
 ## 3. API 資料來源與格式
-
-來源：Google Sheets API
-ChargedLog Endpoint：
+- 來源：Google Sheets API
+- ChargedLog Endpoint：
   https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/ChargedLog?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
-
-統計 endpoint：
+  
+  統計 endpoint：
   https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/統計?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
-
-統計 example.json：
-```json
-{
-  "range": "'統計'!A1:AA999",
-  "majorDimension": "ROWS",
-  "values": [
-    [
-      "日期",
-      "年",
-      "月",
-      "統計階段里程(KM)",
-      "統計充電度數",
-      "統計平均電耗(km/kwh)",
-      "統計平均每度價格",
-      "統計總費用"
-    ],
-    [
-      "2025/7",
-      "2025",
-      "7",
-      "1445.138",
-      "320.8",
-      "4.505",
-      "2.323",
-      "745.220"
+  
+  統計 example.json：
+  ```json
+  {
+    "range": "'統計'!A1:AA999",
+    "majorDimension": "ROWS",
+    "values": [
+      [
+        "日期",
+        "年",
+        "月",
+        "統計階段里程(KM)",
+        "統計充電度數",
+        "統計平均電耗(km/kwh)",
+        "統計平均每度價格",
+        "統計總費用"
+      ],
+      [
+        "2025/7",
+        "2025",
+        "7",
+        "1445.138",
+        "320.8",
+        "4.505",
+        "2.323",
+        "745.220"
+      ]
     ]
-  ]
-}
-```
-
-回傳格式：JSON，欄位如 ChargedLogExample.json
-主要欄位：
+  }
+  ```
+- 回傳格式：JSON，欄位如 ChargedLogExample.json
+- 主要欄位：
   - 日期、總里程、階段里程、充電度數、電耗、價格/度、總費用、充電類型、充電地點、備註
-
-**查詢說明：**
-目前 Google Sheets API 不支援直接以 query string 篩選資料（如日期區間），因此建議每次查詢時將所有資料一次拉回本地端，再由前端（App）根據使用者選擇的日期區間、地點、類型等條件進行本地篩選與處理。
-
-如未來有效能或資料量考量，可考慮自建 proxy API 於 server 端進行篩選。
 
 ## 4. 資料查詢與圖表需求
 - 查詢條件：
-  - 日期區間（預設為當天往前一個月）、充電地點、充電類型
+  - 日期區間、充電地點、充電類型
 - 統計指標：
   - 總充電量（kWh）、總花費、節省金額、各地點/類型佔比
 - 圖表類型：
