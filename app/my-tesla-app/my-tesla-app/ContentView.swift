@@ -8,6 +8,7 @@
 import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel = ChargedLogViewModel()
+    @State private var selectedTab = 0 // 0: 紀錄, 1: 統計
 
     var body: some View {
         ZStack {
@@ -18,9 +19,7 @@ struct ContentView: View {
                     headerSection
                     cardsSection
                     filterBarSection
-                    chartSection1
-                    chartSection2
-                    tableSection
+                    tabSection
                 }
                 .padding(.bottom, 32)
                 .padding(.horizontal, 8)
@@ -192,11 +191,60 @@ struct ContentView: View {
         .padding(.horizontal, 2)
     }
 
+    // Tab 切換區塊
+    private var tabSection: some View {
+        VStack(spacing: 20) {
+            // Tab 按鈕
+            HStack(spacing: 0) {
+                Button(action: { selectedTab = 0 }) {
+                    Text("紀錄")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(selectedTab == 0 ? .white : .gray)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(selectedTab == 0 ? Color(red: 94/255, green: 96/255, blue: 206/255) : Color.clear)
+                        .cornerRadius(8)
+                }
+                
+                Button(action: { selectedTab = 1 }) {
+                    Text("統計")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(selectedTab == 1 ? .white : .gray)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(selectedTab == 1 ? Color(red: 94/255, green: 96/255, blue: 206/255) : Color.clear)
+                        .cornerRadius(8)
+                }
+            }
+            .padding(4)
+            .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+            .cornerRadius(12)
+            
+            // Tab 內容
+            if selectedTab == 0 {
+                recordsTabContent
+            } else {
+                statisticsTabContent
+            }
+        }
+        .padding(.horizontal, 2)
+    }
+    
+    // 紀錄 Tab 內容
+    private var recordsTabContent: some View {
+        tableSection
+    }
+    
+    // 統計 Tab 內容
+    private var statisticsTabContent: some View {
+        VStack(spacing: 18) {
+            chartSection1
+            chartSection2
+        }
+    }
+
     private var tableSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("充電紀錄")
-                .foregroundColor(.gray)
-                .font(.system(size: 15))
             if viewModel.isLoading {
                 HStack {
                     Spacer()
