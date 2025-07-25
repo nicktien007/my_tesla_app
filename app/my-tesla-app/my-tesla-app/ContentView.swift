@@ -216,11 +216,10 @@ struct ContentView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack {
-                            Text("日期").frame(width: 100)
-                            Text("度數").frame(width: 60)
-                            Text("費用").frame(width: 70)
+                            Text("日期").frame(width: 80)
+                            Text("度數").frame(width: 80)
+                            Text("費用").frame(width: 90)
                             Text("類型").frame(width: 60)
-                            Text("備註").frame(width: 80)
                         }
                         .foregroundColor(.gray)
                         .font(.system(size: 14, weight: .medium))
@@ -228,11 +227,10 @@ struct ContentView: View {
                         .background(Color(red: 35/255, green: 38/255, blue: 47/255))
                         ForEach(Array(viewModel.logsFiltered.enumerated()), id: \.element.id) { i, log in
                             HStack {
-                                Text(log.date).frame(width: 100)
-                                Text(log.chargedKWh ?? "").frame(width: 60)
-                                Text("$\(log.totalCost ?? "")").frame(width: 70)
+                                Text(shortDate(log.date)).frame(width: 80)
+                                Text(log.chargedKWh ?? "").frame(width: 80)
+                                Text("$\(log.totalCost ?? "")").frame(width: 90)
                                 Text(typeDisplayName(log.chargeType)).frame(width: 60)
-                                Text(log.note ?? "").frame(width: 80)
                             }
                             .font(.system(size: 14))
                             .foregroundColor(.white)
@@ -252,6 +250,13 @@ struct ContentView: View {
         case "ACSingleWireCAN": return "AC"
         default: return raw ?? ""
         }
+    }
+
+    private func shortDate(_ dateString: String) -> String {
+        if let spaceIdx = dateString.firstIndex(of: " ") {
+            return String(dateString[..<spaceIdx])
+        }
+        return dateString
     }
 }
 

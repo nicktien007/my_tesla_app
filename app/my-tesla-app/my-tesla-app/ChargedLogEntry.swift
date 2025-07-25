@@ -11,9 +11,8 @@ struct ChargedLogEntry: Identifiable, Codable {
     let pricePerKWh: String?
     let totalCost: String?
     let chargeType: String?
-    let note: String?
 
-    init(id: UUID = UUID(), date: String, totalMileage: String?, stageMileage: String?, chargedKWh: String?, efficiency: String?, pricePerKWh: String?, totalCost: String?, chargeType: String?, note: String?) {
+    init(id: UUID = UUID(), date: String, totalMileage: String?, stageMileage: String?, chargedKWh: String?, efficiency: String?, pricePerKWh: String?, totalCost: String?, chargeType: String?) {
         self.id = id
         self.date = date
         self.totalMileage = totalMileage
@@ -23,7 +22,6 @@ struct ChargedLogEntry: Identifiable, Codable {
         self.pricePerKWh = pricePerKWh
         self.totalCost = totalCost
         self.chargeType = chargeType
-        self.note = note
     }
 
     init(from decoder: Decoder) throws {
@@ -37,6 +35,5 @@ struct ChargedLogEntry: Identifiable, Codable {
         self.pricePerKWh = try container.decodeIfPresent(String.self, forKey: .pricePerKWh)
         self.totalCost = try container.decodeIfPresent(String.self, forKey: .totalCost)
         self.chargeType = try container.decodeIfPresent(String.self, forKey: .chargeType)
-        self.note = try container.decodeIfPresent(String.self, forKey: .note)
     }
 }
