@@ -52,7 +52,6 @@ class ChargedLogService {
                 pricePerKWh: row[safe: header.firstIndex(of: pricePerKWhKey) ?? 5],
                 totalCost: row[safe: header.firstIndex(of: "總費用") ?? 6],
                 chargeType: row[safe: header.firstIndex(of: "充電類型") ?? 7],
-                location: row[safe: header.firstIndex(of: "充電地點") ?? 8],
                 note: row[safe: header.firstIndex(of: "備註") ?? 9]
             )
         }

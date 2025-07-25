@@ -120,35 +120,6 @@ struct ContentView: View {
         .padding(.horizontal, 2)
     }
 
-// 自訂 DatePickerSheet，選到日期自動 dismiss
-struct DatePickerSheet: View {
-    let title: String
-    @Binding var date: Date
-    var range: ClosedRange<Date>?
-    var onSelect: () -> Void
-
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack {
-            DatePicker(title, selection: Binding(
-                get: { date },
-                set: { newValue in
-                    date = newValue
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        onSelect()
-                        dismiss()
-                    }
-                }
-            ), in: range ?? Date.distantPast...Date.distantFuture, displayedComponents: [.date])
-                .datePickerStyle(.graphical)
-                .labelsHidden()
-                .padding()
-        }
-        .presentationDetents([.medium])
-    }
-}
-
     private func dateString(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -285,10 +256,9 @@ struct DatePickerSheet: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack {
-                            Text("日期").frame(width: 80)
+                            Text("日期").frame(width: 100)
                             Text("度數").frame(width: 60)
                             Text("費用").frame(width: 70)
-                            Text("地點").frame(width: 80)
                             Text("類型").frame(width: 60)
                             Text("備註").frame(width: 80)
                         }
@@ -298,11 +268,10 @@ struct DatePickerSheet: View {
                         .background(Color(red: 35/255, green: 38/255, blue: 47/255))
                         ForEach(Array(viewModel.logsFiltered.enumerated()), id: \.element.id) { i, log in
                             HStack {
-                                Text(log.date).frame(width: 80)
+                                Text(log.date).frame(width: 100)
                                 Text(log.chargedKWh ?? "").frame(width: 60)
                                 Text("$\(log.totalCost ?? "")").frame(width: 70)
-                                Text(log.location ?? "").frame(width: 80)
-                                Text(log.chargeType ?? "").frame(width: 60)
+                                Text(typeDisplayName(log.chargeType)).frame(width: 60)
                                 Text(log.note ?? "").frame(width: 80)
                             }
                             .font(.system(size: 14))
@@ -317,10 +286,47 @@ struct DatePickerSheet: View {
         .padding(.horizontal, 2)
     }
 
-    struct ContentView_Previews: PreviewProvider {
-        static var previews: some View {
-            ContentView()
-                .preferredColorScheme(.dark)
+    private func typeDisplayName(_ raw: String?) -> String {
+        switch raw {
+        case "Supercharger": return "DC"
+        case "ACSingleWireCAN": return "AC"
+        default: return raw ?? ""
         }
+    }
+}
+
+// 自訂 DatePickerSheet，選到日期自動 dismiss
+struct DatePickerSheet: View {
+    let title: String
+    @Binding var date: Date
+    var range: ClosedRange<Date>?
+    var onSelect: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack {
+            DatePicker(title, selection: Binding(
+                get: { date },
+                set: { newValue in
+                    date = newValue
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        onSelect()
+                        dismiss()
+                    }
+                }
+            ), in: range ?? Date.distantPast...Date.distantFuture, displayedComponents: [.date])
+                .datePickerStyle(.graphical)
+                .labelsHidden()
+                .padding()
+        }
+        .presentationDetents([.medium])
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .preferredColorScheme(.dark)
     }
 }

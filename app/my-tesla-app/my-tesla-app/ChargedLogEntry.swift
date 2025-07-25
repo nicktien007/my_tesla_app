@@ -10,6 +10,5 @@ struct ChargedLogEntry: Identifiable, Codable {
     let pricePerKWh: String?
     let totalCost: String?
     let chargeType: String?
-    let location: String?
     let note: String?
 }
