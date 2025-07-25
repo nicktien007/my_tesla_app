@@ -92,6 +92,38 @@
       padding: 6px 10px;
       font-size: 1em;
     }
+    .tab-container {
+      margin-bottom: 20px;
+    }
+    .tab-buttons {
+      display: flex;
+      background: #23262f;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+    .tab-button.active {
+      background: #5e60ce;
+      color: #fff;
+    }
+    .tab-button:not(.active) {
+      color: #aaa;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
     .table-section {
       background: #23262f;
       border-radius: 18px;
@@ -152,58 +184,93 @@
         類型
       </span>
     </div>
-    <div class="chart-section">
-  <div class="chart-title">月度充電量</div>
-  <div class="chart-placeholder" style="background:#23262f; color:#555; height:60px; align-items:center; justify-content:center;">[Bar Chart Placeholder]</div>
-    </div>
-    <div class="chart-section">
-  <div class="chart-title">里程/費用統計</div>
-  <div class="chart-placeholder" style="background:#23262f; color:#555; height:60px; align-items:center; justify-content:center;">[Bar Chart Placeholder]</div>
-    </div>
-    <div class="table-section">
-      <table>
-        <thead>
-          <tr>
-            <th>日期</th>
-            <th>度數</th>
-            <th>費用</th>
-            <th>類型</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>2025-06-27</td>
-            <td>39.28</td>
-            <td>$90.344</td>
-            <td>AC</td>
-          </tr>
-          <tr>
-            <td>2025-06-28</td>
-            <td>14.36</td>
-            <td>$33.028</td>
-            <td>AC</td>
-          </tr>
-          <tr>
-            <td>2025-07-01</td>
-            <td>36.9</td>
-            <td>$92.25</td>
-            <td>AC</td>
-          </tr>
-          <tr>
-            <td>2025-07-05</td>
-            <td>29.38</td>
-            <td>$67.574</td>
-            <td>AC</td>
-          </tr>
-          <tr>
-            <td>2025-07-07</td>
-            <td>28.28</td>
-            <td>$65.044</td>
-            <td>AC</td>
-          </tr>
-        </tbody>
-      </table>
+    
+    <div class="tab-container">
+      <div class="tab-buttons">
+        <div class="tab-button active" onclick="switchTab('records')">紀錄</div>
+        <div class="tab-button" onclick="switchTab('statistics')">統計</div>
+      </div>
+      
+      <div id="records" class="tab-content active">
+        <div class="table-section">
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>度數</th>
+                <th>費用</th>
+                <th>類型</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2025-06-27</td>
+                <td>39.28</td>
+                <td>$90.344</td>
+                <td>AC</td>
+              </tr>
+              <tr>
+                <td>2025-06-28</td>
+                <td>14.36</td>
+                <td>$33.028</td>
+                <td>AC</td>
+              </tr>
+              <tr>
+                <td>2025-07-01</td>
+                <td>36.9</td>
+                <td>$92.25</td>
+                <td>AC</td>
+              </tr>
+              <tr>
+                <td>2025-07-05</td>
+                <td>29.38</td>
+                <td>$67.574</td>
+                <td>AC</td>
+              </tr>
+              <tr>
+                <td>2025-07-07</td>
+                <td>28.28</td>
+                <td>$65.044</td>
+                <td>AC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div id="statistics" class="tab-content">
+        <div class="chart-section">
+          <div class="chart-title">月度充電量</div>
+          <div class="chart-placeholder" style="background:#23262f; color:#555; height:60px; align-items:center; justify-content:center;">[Bar Chart Placeholder]</div>
+        </div>
+        <div class="chart-section">
+          <div class="chart-title">里程/費用統計</div>
+          <div class="chart-placeholder" style="background:#23262f; color:#555; height:60px; align-items:center; justify-content:center;">[Bar Chart Placeholder]</div>
+        </div>
+      </div>
     </div>
   </div>
+  
+  <script>
+    function switchTab(tabName) {
+      // 隱藏所有 tab 內容
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // 移除所有按鈕的 active 狀態
+      const tabButtons = document.querySelectorAll('.tab-button');
+      tabButtons.forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // 顯示選中的 tab 內容
+      document.getElementById(tabName).classList.add('active');
+      
+      // 設定選中按鈕的 active 狀態
+      event.target.classList.add('active');
+    }
+  </script>
 </body>
 </html>
