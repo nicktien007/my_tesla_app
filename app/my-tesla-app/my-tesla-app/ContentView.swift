@@ -9,16 +9,159 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, worldABC!")
+        ZStack {
+            Color(red: 24/255, green: 26/255, blue: 32/255)
+                .ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 18) {
+                    // Header
+                    HStack {
+                        Text("TESLA")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                        Spacer()
+                        Text("Hi, User")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 16))
+                    }
+                    .padding(.horizontal, 4)
+                    .padding(.top, 8)
+
+                    // Cards
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("本月充電度數")
+                                .font(.system(size: 15))
+                                .foregroundColor(.gray)
+                            Text("120.5 kWh")
+                                .font(.system(size: 32, weight: .bold))
+                                .foregroundColor(.white)
+                            Text("較上月 +8%")
+                                .font(.system(size: 14))
+                                .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                        }
+                        .padding()
+                        .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                        .cornerRadius(18)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("本月充電費用")
+                                .font(.system(size: 15))
+                                .foregroundColor(.gray)
+                            Text("$2520")
+                                .font(.system(size: 32, weight: .bold))
+                                .foregroundColor(.white)
+                            Text("平均 $2.1 / kWh")
+                                .font(.system(size: 14))
+                                .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                        }
+                        .padding()
+                        .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                        .cornerRadius(18)
+                    }
+
+                    // Filter Bar
+                    HStack(spacing: 8) {
+                        DatePicker("", selection: .constant(Date()), displayedComponents: .date)
+                            .labelsHidden()
+                            .frame(maxWidth: 120)
+                        DatePicker("", selection: .constant(Date()), displayedComponents: .date)
+                            .labelsHidden()
+                            .frame(maxWidth: 120)
+                        Picker("地點", selection: .constant(0)) {
+                            Text("全部地點").tag(0)
+                            Text("家用充電").tag(1)
+                            Text("超充站").tag(2)
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .frame(maxWidth: 100)
+                        Picker("類型", selection: .constant(0)) {
+                            Text("全部類型").tag(0)
+                            Text("AC").tag(1)
+                            Text("DC").tag(2)
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .frame(maxWidth: 100)
+                    }
+                    .padding(.horizontal, 2)
+
+                    // Chart Section 1
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("月度充電量")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 15))
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(red: 35/255, green: 38/255, blue: 47/255))
+                            .frame(height: 140)
+                            .overlay(
+                                Text("[Bar Chart Placeholder]")
+                                    .foregroundColor(Color.gray.opacity(0.5))
+                            )
+                    }
+                    .padding(.horizontal, 2)
+
+                    // Chart Section 2
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("里程/費用統計")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 15))
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(red: 35/255, green: 38/255, blue: 47/255))
+                            .frame(height: 140)
+                            .overlay(
+                                Text("[Bar Chart Placeholder]")
+                                    .foregroundColor(Color.gray.opacity(0.5))
+                            )
+                    }
+                    .padding(.horizontal, 2)
+
+                    // Table Section
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("充電紀錄")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 15))
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            VStack {
+                                HStack {
+                                    Text("日期").frame(width: 80)
+                                    Text("度數").frame(width: 60)
+                                    Text("費用").frame(width: 70)
+                                    Text("地點").frame(width: 80)
+                                    Text("類型").frame(width: 60)
+                                    Text("備註").frame(width: 80)
+                                }
+                                .foregroundColor(.gray)
+                                .font(.system(size: 14, weight: .medium))
+                                .padding(.vertical, 4)
+                                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                                ForEach(0..<3) { i in
+                                    HStack {
+                                        Text("2025-07-24").frame(width: 80)
+                                        Text("8.3").frame(width: 60)
+                                        Text("$17.43").frame(width: 70)
+                                        Text("家用充電").frame(width: 80)
+                                        Text("AC").frame(width: 60)
+                                        Text("-").frame(width: 80)
+                                    }
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.white)
+                                    .background(i % 2 == 0 ? Color(red: 35/255, green: 38/255, blue: 47/255) : Color(red: 27/255, green: 29/255, blue: 35/255))
+                                }
+                            }
+                        }
+                        .cornerRadius(12)
+                    }
+                    .padding(.horizontal, 2)
+                }
+                .padding(.bottom, 32)
+                .padding(.horizontal, 8)
+            }
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .preferredColorScheme(.dark)
+    }
 }
