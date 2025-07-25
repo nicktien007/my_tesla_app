@@ -67,20 +67,78 @@ struct ContentView: View {
                         DatePicker("", selection: .constant(Date()), displayedComponents: .date)
                             .labelsHidden()
                             .frame(maxWidth: 120)
-                        Picker("地點", selection: .constant(0)) {
-                            Text("全部地點").tag(0)
-                            Text("家用充電").tag(1)
-                            Text("超充站").tag(2)
+                    }
+                    .padding(.horizontal, 2)
+
+                    HStack(spacing: 20) {
+                        Picker(selection: .constant(0), label:
+                            HStack(spacing: 4) {
+                                Image(systemName: "mappin.and.ellipse")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 20, height: 20)
+                                Text("地點")
+                            }
+                            .foregroundColor(Color.blue)
+                        ) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "mappin.and.ellipse")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                Text("地點")
+                            }.tag(0)
+                            HStack(spacing: 6) {
+                                Image(systemName: "house.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                Text("家用充電")
+                            }.tag(1)
+                            HStack(spacing: 6) {
+                                Image(systemName: "bolt.car")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                Text("超充站")
+                            }.tag(2)
                         }
                         .pickerStyle(MenuPickerStyle())
-                        .frame(maxWidth: 100)
-                        Picker("類型", selection: .constant(0)) {
-                            Text("全部類型").tag(0)
-                            Text("AC").tag(1)
-                            Text("DC").tag(2)
+                        .frame(maxWidth: 120)
+                        Picker(selection: .constant(0), label:
+                            HStack(spacing: 4) {
+                                Image(systemName: "bolt.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 20, height: 20)
+                                Text("類型")
+                            }
+                            .foregroundColor(Color.blue)
+                        ) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "bolt.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                Text("類型")
+                            }.tag(0)
+                            HStack(spacing: 6) {
+                                Image(systemName: "bolt.horizontal.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                Text("AC")
+                            }.tag(1)
+                            HStack(spacing: 6) {
+                                Image(systemName: "bolt.fill.batteryblock")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                Text("DC")
+                            }.tag(2)
                         }
                         .pickerStyle(MenuPickerStyle())
-                        .frame(maxWidth: 100)
+                        .frame(maxWidth: 120)
                     }
                     .padding(.horizontal, 2)
 
