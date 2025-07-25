@@ -32,7 +32,7 @@ struct ContentView: View {
 
     private var headerSection: some View {
         HStack {
-            Text("TESLA")
+            Text("MYTESLA")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
             Spacer()
@@ -263,17 +263,20 @@ struct ContentView: View {
             } else {
                 GeometryReader { geometry in
                     let totalWidth = geometry.size.width - 16 // 減去 padding
-                    let dateWidth = totalWidth * 0.3     // 30% 給日期
-                    let numberWidth = totalWidth * 0.25  // 25% 給度數
-                    let priceWidth = totalWidth * 0.3    // 30% 給費用
-                    let typeWidth = totalWidth * 0.15    // 15% 給類型
-                    
+                    let dateWidth = totalWidth * 0.25     // 25% 給日期
+                    let numberWidth = totalWidth * 0.18   // 18% 給度數
+                    let mileageWidth = totalWidth * 0.18   // 18% 給里程
+                    let priceWidth = totalWidth * 0.24     // 24% 給費用
+                    let typeWidth = totalWidth * 0.15      // 15% 給類型
+
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 0) {
                             Text("日期")
                                 .frame(width: dateWidth, alignment: .leading)
                             Text("度數")
                                 .frame(width: numberWidth, alignment: .center)
+                            Text("里程")
+                                .frame(width: mileageWidth, alignment: .center)
                             Text("費用")
                                 .frame(width: priceWidth, alignment: .center)
                             Text("類型")
@@ -284,13 +287,15 @@ struct ContentView: View {
                         .padding(.vertical, 8)
                         .padding(.horizontal, 8)
                         .background(Color(red: 35/255, green: 38/255, blue: 47/255))
-                        
+
                         ForEach(Array(viewModel.logsFiltered.enumerated()), id: \.element.id) { i, log in
                             HStack(spacing: 0) {
                                 Text(shortDate(log.date))
                                     .frame(width: dateWidth, alignment: .leading)
                                 Text(log.chargedKWh ?? "")
                                     .frame(width: numberWidth, alignment: .center)
+                                Text(log.mileage ?? "")
+                                    .frame(width: mileageWidth, alignment: .center)
                                 Text("$\(log.totalCost ?? "")")
                                     .frame(width: priceWidth, alignment: .center)
                                 Text(typeDisplayName(log.chargeType))

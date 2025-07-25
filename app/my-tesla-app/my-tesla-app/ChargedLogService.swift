@@ -40,15 +40,16 @@ class ChargedLogService {
         let dataRows = rows.dropFirst()
         // 新欄位名稱完全比對 API header
         let totalMileageKey = "總里程(km)"
-        let efficiencyKey = "電耗(km/kwh)"
+    // let efficiencyKey = "電耗(km/kwh)" // 已移除
         let pricePerKWhKey = "價格 / kwh"
+    let mileageKey = "階段里程"
         return dataRows.compactMap { row in
             ChargedLogEntry(
                 date: row[safe: header.firstIndex(of: "日期") ?? 0] ?? "",
                 totalMileage: row[safe: header.firstIndex(of: totalMileageKey) ?? 1],
-                stageMileage: row[safe: header.firstIndex(of: "階段里程") ?? 2],
+                stageMileage: nil,
                 chargedKWh: row[safe: header.firstIndex(of: "充電度數") ?? 3],
-                efficiency: row[safe: header.firstIndex(of: efficiencyKey) ?? 4],
+                mileage: row[safe: header.firstIndex(of: mileageKey) ?? 2],
                 pricePerKWh: row[safe: header.firstIndex(of: pricePerKWhKey) ?? 5],
                 totalCost: row[safe: header.firstIndex(of: "總費用") ?? 6],
                 chargeType: row[safe: header.firstIndex(of: "充電類型") ?? 7]

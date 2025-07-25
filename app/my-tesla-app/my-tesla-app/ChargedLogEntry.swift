@@ -7,18 +7,18 @@ struct ChargedLogEntry: Identifiable, Codable {
     let totalMileage: String?
     let stageMileage: String?
     let chargedKWh: String?
-    let efficiency: String?
+    let mileage: String? // 里程
     let pricePerKWh: String?
     let totalCost: String?
     let chargeType: String?
 
-    init(id: UUID = UUID(), date: String, totalMileage: String?, stageMileage: String?, chargedKWh: String?, efficiency: String?, pricePerKWh: String?, totalCost: String?, chargeType: String?) {
+    init(id: UUID = UUID(), date: String, totalMileage: String?, stageMileage: String?, chargedKWh: String?, mileage: String?, pricePerKWh: String?, totalCost: String?, chargeType: String?) {
         self.id = id
         self.date = date
         self.totalMileage = totalMileage
         self.stageMileage = stageMileage
         self.chargedKWh = chargedKWh
-        self.efficiency = efficiency
+        self.mileage = mileage
         self.pricePerKWh = pricePerKWh
         self.totalCost = totalCost
         self.chargeType = chargeType
@@ -31,7 +31,7 @@ struct ChargedLogEntry: Identifiable, Codable {
         self.totalMileage = try container.decodeIfPresent(String.self, forKey: .totalMileage)
         self.stageMileage = try container.decodeIfPresent(String.self, forKey: .stageMileage)
         self.chargedKWh = try container.decodeIfPresent(String.self, forKey: .chargedKWh)
-        self.efficiency = try container.decodeIfPresent(String.self, forKey: .efficiency)
+        self.mileage = try container.decodeIfPresent(String.self, forKey: .mileage)
         self.pricePerKWh = try container.decodeIfPresent(String.self, forKey: .pricePerKWh)
         self.totalCost = try container.decodeIfPresent(String.self, forKey: .totalCost)
         self.chargeType = try container.decodeIfPresent(String.self, forKey: .chargeType)
