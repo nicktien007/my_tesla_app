@@ -5,9 +5,12 @@
 //  Created by nick on 2025/7/25.
 //
 
+
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = ChargedLogViewModel()
+
     var body: some View {
         ZStack {
             Color(red: 24/255, green: 26/255, blue: 32/255)
@@ -177,42 +180,63 @@ struct ContentView: View {
                         Text("充電紀錄")
                             .foregroundColor(.gray)
                             .font(.system(size: 15))
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            VStack {
-                                HStack {
-                                    Text("日期").frame(width: 80)
-                                    Text("度數").frame(width: 60)
-                                    Text("費用").frame(width: 70)
-                                    Text("地點").frame(width: 80)
-                                    Text("類型").frame(width: 60)
-                                    Text("備註").frame(width: 80)
-                                }
+                        if viewModel.isLoading {
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                Spacer()
+                            }
+                            .padding()
+                        } else if let error = viewModel.errorMessage {
+                            Text(error)
+                                .foregroundColor(.red)
+                                .padding()
+                        } else if viewModel.logs.isEmpty {
+                            Text("尚無資料")
                                 .foregroundColor(.gray)
-                                .font(.system(size: 14, weight: .medium))
-                                .padding(.vertical, 4)
-                                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
-                                ForEach(0..<3) { i in
+                                .padding()
+                        } else {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                VStack(alignment: .leading, spacing: 0) {
                                     HStack {
-                                        Text("2025-07-24").frame(width: 80)
-                                        Text("8.3").frame(width: 60)
-                                        Text("$17.43").frame(width: 70)
-                                        Text("家用充電").frame(width: 80)
-                                        Text("AC").frame(width: 60)
-                                        Text("-").frame(width: 80)
+                                        Text("日期").frame(width: 80)
+                                        Text("度數").frame(width: 60)
+                                        Text("費用").frame(width: 70)
+                                        Text("地點").frame(width: 80)
+                                        Text("類型").frame(width: 60)
+                                        Text("備註").frame(width: 80)
                                     }
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white)
-                                    .background(i % 2 == 0 ? Color(red: 35/255, green: 38/255, blue: 47/255) : Color(red: 27/255, green: 29/255, blue: 35/255))
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .padding(.vertical, 4)
+                                    .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                                    ForEach(viewModel.logs.indices, id: \.self) { i in
+                                        let log = viewModel.logs[i]
+                                        HStack {
+                                            Text(log.date).frame(width: 80)
+                                            Text(log.chargedKWh ?? "").frame(width: 60)
+                                            Text("$\(log.totalCost ?? "")").frame(width: 70)
+                                            Text(log.location ?? "").frame(width: 80)
+                                            Text(log.chargeType ?? "").frame(width: 60)
+                                            Text(log.note ?? "").frame(width: 80)
+                                        }
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.white)
+                                        .background(i % 2 == 0 ? Color(red: 35/255, green: 38/255, blue: 47/255) : Color(red: 27/255, green: 29/255, blue: 35/255))
+                                    }
                                 }
                             }
+                            .cornerRadius(12)
                         }
-                        .cornerRadius(12)
                     }
                     .padding(.horizontal, 2)
                 }
                 .padding(.bottom, 32)
                 .padding(.horizontal, 8)
             }
+        }
+        .onAppear {
+            viewModel.loadLogs()
         }
     }
 }

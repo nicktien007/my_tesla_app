@@ -13,7 +13,7 @@
 
 ## 3. API 資料來源與格式
 - 來源：Google Sheets API
-- Endpoint：
+- ChargedLog Endpoint：
   https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/ChargedLog?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
   
   統計 endpoint：
