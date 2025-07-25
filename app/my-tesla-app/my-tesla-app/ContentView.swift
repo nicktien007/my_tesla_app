@@ -1,3 +1,11 @@
+enum ChargedLogSortKey: String, CaseIterable {
+    case date, chargedKWh, mileage, totalCost
+}
+
+enum SortOrder {
+    case ascending, descending
+    mutating func toggle() { self = self == .ascending ? .descending : .ascending }
+}
 //
 //  ContentView.swift
 //  my-tesla-app
@@ -7,6 +15,8 @@
 
 import SwiftUI
 struct ContentView: View {
+    @State private var sortKey: ChargedLogSortKey = .date
+    @State private var sortOrder: SortOrder = .descending
     @StateObject private var viewModel = ChargedLogViewModel()
     @State private var selectedTab = 0 // 0: 紀錄, 1: 統計
 
@@ -271,14 +281,10 @@ struct ContentView: View {
 
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 0) {
-                            Text("日期")
-                                .frame(width: dateWidth, alignment: .leading)
-                            Text("度數")
-                                .frame(width: numberWidth, alignment: .center)
-                            Text("里程")
-                                .frame(width: mileageWidth, alignment: .center)
-                            Text("費用")
-                                .frame(width: priceWidth, alignment: .center)
+                            sortableHeader(title: "日期", key: .date, width: dateWidth, alignment: .leading)
+                            sortableHeader(title: "度數", key: .chargedKWh, width: numberWidth, alignment: .center)
+                            sortableHeader(title: "里程", key: .mileage, width: mileageWidth, alignment: .center)
+                            sortableHeader(title: "費用", key: .totalCost, width: priceWidth, alignment: .center)
                             Text("類型")
                                 .frame(width: typeWidth, alignment: .center)
                         }
@@ -288,7 +294,7 @@ struct ContentView: View {
                         .padding(.horizontal, 8)
                         .background(Color(red: 35/255, green: 38/255, blue: 47/255))
 
-                        ForEach(Array(viewModel.logsFiltered.enumerated()), id: \.element.id) { i, log in
+                        ForEach(Array(sortedLogs.enumerated()), id: \.element.id) { i, log in
                             HStack(spacing: 0) {
                                 Text(shortDate(log.date))
                                     .frame(width: dateWidth, alignment: .leading)
@@ -310,11 +316,73 @@ struct ContentView: View {
                     }
                     .cornerRadius(12)
                 }
-                .frame(height: CGFloat(viewModel.logsFiltered.count * 40 + 50)) // 動態高度
+                .frame(height: CGFloat(sortedLogs.count * 40 + 50)) // 動態高度
                 .cornerRadius(12)
             }
         }
         .padding(.horizontal, 2)
+    }
+
+    private var sortedLogs: [ChargedLogEntry] {
+        viewModel.logsFiltered.sorted { a, b in
+            let cmp: ComparisonResult
+            switch sortKey {
+            case .date:
+                cmp = (a.date < b.date) ? .orderedAscending : (a.date > b.date ? .orderedDescending : .orderedSame)
+            case .chargedKWh:
+                let aVal = Double(a.chargedKWh ?? "") ?? 0
+                let bVal = Double(b.chargedKWh ?? "") ?? 0
+                cmp = aVal < bVal ? .orderedAscending : (aVal > bVal ? .orderedDescending : .orderedSame)
+            case .mileage:
+                let aVal = Double(a.mileage ?? "") ?? 0
+                let bVal = Double(b.mileage ?? "") ?? 0
+                cmp = aVal < bVal ? .orderedAscending : (aVal > bVal ? .orderedDescending : .orderedSame)
+            case .totalCost:
+                let aVal = Double(a.totalCost ?? "") ?? 0
+                let bVal = Double(b.totalCost ?? "") ?? 0
+                cmp = aVal < bVal ? .orderedAscending : (aVal > bVal ? .orderedDescending : .orderedSame)
+            }
+            return sortOrder == .ascending ? cmp == .orderedAscending : cmp == .orderedDescending
+        }
+    }
+
+    @ViewBuilder
+    private func sortableHeader(title: String, key: ChargedLogSortKey, width: CGFloat, alignment: Alignment) -> some View {
+        Button(action: {
+            if sortKey == key {
+                sortOrder.toggle()
+            } else {
+                sortKey = key
+                sortOrder = .descending
+            }
+        }) {
+            HStack(spacing: 2) {
+                Text(title)
+                Group {
+                    if sortKey == key {
+                        VStack(spacing: 0) {
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .font(.system(size: 8, weight: .bold))
+                                .foregroundColor(sortOrder == .ascending ? .blue : .gray)
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .font(.system(size: 8, weight: .bold))
+                                .foregroundColor(sortOrder == .descending ? .blue : .gray)
+                        }
+                    } else {
+                        VStack(spacing: 0) {
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .font(.system(size: 8, weight: .regular))
+                                .foregroundColor(.gray)
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .font(.system(size: 8, weight: .regular))
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+            }
+            .frame(width: width, alignment: alignment)
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 
     private func typeDisplayName(_ raw: String?) -> String {
