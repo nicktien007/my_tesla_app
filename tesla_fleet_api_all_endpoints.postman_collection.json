@@ -1,0 +1,730 @@
+{
+  "info": {
+    "name": "Tesla Fleet API All Endpoints",
+    "description": "Postman collection for all Tesla Fleet API endpoints, grouped by category.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Charging Endpoints",
+      "item": [
+        {
+          "name": "charging_history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/dx/charging/history",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "dx", "charging", "history"],
+              "query": [
+                { "key": "endTime", "value": "", "description": "End time of the window to download charging history for (e.g. 2023-07-28T11:43:45-07:00)" },
+                { "key": "pageNo", "value": "", "description": "Current page number." },
+                { "key": "pageSize", "value": "", "description": "Number of records per page." },
+                { "key": "sortBy", "value": "", "description": "Field to sort by." },
+                { "key": "sortOrder", "value": "", "description": "Sort order (ASC or DESC)." },
+                { "key": "startTime", "value": "", "description": "Start time of the window to download charging history for (e.g. 2023-07-27T11:43:45-07:00)" },
+                { "key": "vin", "value": "", "description": "Vehicle Identification Number (VIN) of the selected vehicle." }
+              ]
+            },
+            "description": "Returns the paginated charging history.\n\nParameters:\n- endTime: End time of the window to download charging history for (e.g. 2023-07-28T11:43:45-07:00)\n- pageNo: Current page number.\n- pageSize: Number of records per page.\n- sortBy: Field to sort by.\n- sortOrder: Sort order (ASC or DESC).\n- startTime: Start time of the window to download charging history for (e.g. 2023-07-27T11:43:45-07:00)\n- vin: Vehicle Identification Number (VIN) of the selected vehicle."
+          }
+        },
+        {
+          "name": "charging_invoice",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/dx/charging/invoice/:id",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "dx", "charging", "invoice", ":id"],
+              "variable": [
+                { "key": "id", "value": "", "description": "The unique identifier for the charging event." }
+              ]
+            },
+            "description": "Returns a charging invoice PDF for an event from charging history.\n\nParameters:\n- id: The unique identifier for the charging event (path parameter)."
+          }
+        },
+        {
+          "name": "charging_sessions (business fleet only)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/dx/charging/sessions",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "dx", "charging", "sessions"]
+            },
+            "description": "Returns the charging session information including pricing and energy data. This endpoint is only available for business accounts that own a fleet of vehicles."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Energy Endpoints",
+      "item": [
+        {
+          "name": "backup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/backup",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "backup"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Adjust the site's backup reserve.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "backup_history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/calendar_history",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "calendar_history"],
+              "query": [
+                { "key": "kind", "value": "backup", "description": "Type of history to retrieve (fixed: backup)." },
+                { "key": "start_date", "value": "", "description": "Start date (e.g. 2023-07-27T11:43:45-07:00)." },
+                { "key": "end_date", "value": "", "description": "End date (e.g. 2023-07-28T11:43:45-07:00)." },
+                { "key": "period", "value": "", "description": "Aggregation period." },
+                { "key": "time_zone", "value": "", "description": "Time zone." }
+              ],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Returns the backup (off-grid) event history of the site in duration of seconds.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter).\n- kind: Type of history to retrieve (fixed: backup).\n- start_date: Start date.\n- end_date: End date.\n- period: Aggregation period.\n- time_zone: Time zone."
+          }
+        },
+        {
+          "name": "charge_history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/telemetry_history",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "telemetry_history"],
+              "query": [
+                { "key": "kind", "value": "charge", "description": "Type of telemetry to retrieve (fixed: charge)." },
+                { "key": "start_date", "value": "", "description": "Start date (e.g. 2023-07-27T11:43:45-07:00)." },
+                { "key": "end_date", "value": "", "description": "End date (e.g. 2023-07-28T11:43:45-07:00)." },
+                { "key": "time_zone", "value": "", "description": "Time zone." }
+              ],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Returns the charging history of a wall connector.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter).\n- kind: Type of telemetry to retrieve (fixed: charge).\n- start_date: Start date.\n- end_date: End date.\n- time_zone: Time zone."
+          }
+        },
+        {
+          "name": "energy_history",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/calendar_history",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "calendar_history"],
+              "query": [
+                { "key": "kind", "value": "energy", "description": "Type of history to retrieve (fixed: energy)." },
+                { "key": "start_date", "value": "", "description": "Start date (e.g. 2023-07-27T11:43:45-07:00)." },
+                { "key": "end_date", "value": "", "description": "End date (e.g. 2023-07-28T11:43:45-07:00)." },
+                { "key": "period", "value": "", "description": "Aggregation period." },
+                { "key": "time_zone", "value": "", "description": "Time zone." }
+              ],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Returns the energy measurements of the site, aggregated to the requested period.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter).\n- kind: Type of history to retrieve (fixed: energy).\n- start_date: Start date.\n- end_date: End date.\n- period: Aggregation period.\n- time_zone: Time zone."
+          }
+        },
+        {
+          "name": "grid_import_export",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/grid_import_export",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "grid_import_export"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Allow/disallow charging from the grid and exporting energy to the grid.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "live_status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/live_status",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "live_status"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Returns the live status of the site (power, state of energy, grid status, storm mode).\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "off_grid_vehicle_charging_reserve",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/off_grid_vehicle_charging_reserve",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "off_grid_vehicle_charging_reserve"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Adjust the site's off-grid vehicle charging backup reserve.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "operation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/operation",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "operation"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Set the site's mode.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/products",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "products"]
+            },
+            "description": "Returns products mapped to user."
+          }
+        },
+        {
+          "name": "site_info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/site_info",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "site_info"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Returns information about the site. Things like assets (has solar, etc), settings (backup reserve, etc), and features (storm_mode_capable, etc).\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "storm_mode",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/storm_mode",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "storm_mode"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Update storm watch participation.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        },
+        {
+          "name": "time_of_use_settings",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/energy_sites/:energy_site_id/time_of_use_settings",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "energy_sites", ":energy_site_id", "time_of_use_settings"],
+              "variable": [
+                { "key": "energy_site_id", "value": "", "description": "The unique identifier for the energy site." }
+              ]
+            },
+            "description": "Update the time of use settings for the energy site.\n\nParameters:\n- energy_site_id: The unique identifier for the energy site (path parameter)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partner Endpoints",
+      "item": [
+        {
+          "name": "fleet_telemetry_error_vins",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/partner_accounts/fleet_telemetry_error_vins",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "partner_accounts", "fleet_telemetry_error_vins"]
+            },
+            "description": "Returns a list of vins that have fleet telemetry errors reported after receiving the config.\n\nRequires a partner authentication token."
+          }
+        },
+        {
+          "name": "fleet_telemetry_errors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/partner_accounts/fleet_telemetry_errors",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "partner_accounts", "fleet_telemetry_errors"]
+            },
+            "description": "Returns recent fleet telemetry errors reported by vehicles after receiving the config.\n\nRequires a partner authentication token."
+          }
+        },
+        {
+          "name": "public_key",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/partner_accounts/public_key",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "partner_accounts", "public_key"],
+              "query": [
+                { "key": "domain", "value": "", "description": "Domain to retrieve the public key for." }
+              ]
+            },
+            "description": "Returns the public key associated with a domain. It can be used to ensure the registration was successful.\n\nRequires a partner authentication token.\n\nParameters:\n- domain: The domain to retrieve the public key for (query parameter)."
+          }
+        },
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/partner_accounts",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "partner_accounts"]
+            },
+            "description": "Registers an existing account before it can be used for general API access. Each application from developer.tesla.com must complete this step.\n\nRequires a partner authentication token."
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Endpoints",
+      "item": [
+        {
+          "name": "feature_config",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/users/feature_config",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "users", "feature_config"]
+            },
+            "description": "Returns any custom feature flag applied to a user."
+          }
+        },
+        {
+          "name": "me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/users/me",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "users", "me"]
+            },
+            "description": "Returns a summary of a user's account."
+          }
+        },
+        {
+          "name": "orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/users/orders",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "users", "orders"]
+            },
+            "description": "Returns the active orders for a user."
+          }
+        },
+        {
+          "name": "region",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/users/region",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "users", "region"]
+            },
+            "description": "Returns a user's region and appropriate fleet-api base URL. Accepts no parameters, response is based on the authentication token subject."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicle Commands",
+      "item": [
+        {
+          "name": "actuate_trunk",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/actuate_trunk",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "actuate_trunk"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Controls the front (which_trunk: 'front') or rear (which_trunk: 'rear') trunk.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter).\n- which_trunk: 'front' or 'rear' (body parameter)."
+          }
+        },
+        {
+          "name": "add_charge_schedule",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/add_charge_schedule",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "add_charge_schedule"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Add a schedule for vehicle charging.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter).\n- schedule: Charging schedule details (body parameter)."
+          }
+        },
+        {
+          "name": "add_precondition_schedule",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/add_precondition_schedule",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "add_precondition_schedule"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Add or modify a preconditioning schedule.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter).\n- schedule: Preconditioning schedule details (body parameter)."
+          }
+        },
+        {
+          "name": "adjust_volume",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/adjust_volume",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "adjust_volume"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Adjusts vehicle media playback volume. This command requires the user to be present and mobile access to be enabled.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter).\n- volume: Target volume level (body parameter)."
+          }
+        },
+        {
+          "name": "auto_conditioning_start",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/auto_conditioning_start",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "auto_conditioning_start"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Starts climate preconditioning.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "auto_conditioning_stop",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/auto_conditioning_stop",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "auto_conditioning_stop"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Stops climate preconditioning.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "cancel_software_update",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/cancel_software_update",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "cancel_software_update"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Cancels the countdown to install the vehicle software update. This operation will no longer work after the vehicle begins the software installation.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "charge_max_range",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/charge_max_range",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "charge_max_range"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Charges in max range mode -- we recommend limiting the use of this mode to long trips.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "charge_port_door_close",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/charge_port_door_close",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "charge_port_door_close"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Closes the charge port door.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "charge_port_door_open",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/charge_port_door_open",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "charge_port_door_open"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Opens the charge port door.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "charge_standard",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/charge_standard",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "charge_standard"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Charges in Standard mode.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "charge_start",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/charge_start",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "charge_start"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Starts charging the vehicle.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "charge_stop",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/charge_stop",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "charge_stop"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Stops charging the vehicle.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "clear_pin_to_drive_admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/clear_pin_to_drive_admin",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "clear_pin_to_drive_admin"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Deactivates PIN to Drive and resets the associated PIN for vehicles running firmware versions 2023.44+. This command is only accessible to fleet managers or owners.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "door_lock",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/door_lock",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "door_lock"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Locks the vehicle.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "door_unlock",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/door_unlock",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "door_unlock"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Unlocks the vehicle.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "erase_user_data",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/erase_user_data",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "erase_user_data"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Erases user's data from the user interface. Requires the vehicle to be parked and in Guest Mode.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        },
+        {
+          "name": "flash_lights",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "https://developer.tesla.com/api/1/vehicles/:vehicle_tag/command/flash_lights",
+              "protocol": "https",
+              "host": ["developer", "tesla", "com"],
+              "path": ["api", "1", "vehicles", ":vehicle_tag", "command", "flash_lights"],
+              "variable": [
+                { "key": "vehicle_tag", "value": "", "description": "The unique identifier for the vehicle." }
+              ]
+            },
+            "description": "Briefly flashes the vehicle headlights. Requires the vehicle to be in park.\n\nParameters:\n- vehicle_tag: The unique identifier for the vehicle (path parameter)."
+          }
+        }
+      ]
+    }
+  ]
+}
