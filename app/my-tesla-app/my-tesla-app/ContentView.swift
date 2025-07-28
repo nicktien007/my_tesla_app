@@ -103,6 +103,28 @@ struct ContentView: View {
 
     @State private var showStartPicker = false
     @State private var showEndPicker = false
+    @State private var selectedType: ChargeTypeFilter = .all
+
+    enum ChargeTypeFilter: String, CaseIterable, Identifiable {
+        case all = "all"
+        case ac = "ACSingleWireCAN"
+        case dc = "Supercharger"
+        var id: String { rawValue }
+        var display: String {
+            switch self {
+            case .all: return "全部"
+            case .ac: return "AC"
+            case .dc: return "DC"
+            }
+        }
+        var icon: String {
+            switch self {
+            case .all: return "bolt.fill"
+            case .ac: return "bolt.horizontal.fill"
+            case .dc: return "bolt.fill.batteryblock"
+            }
+        }
+    }
 
     private var filterBarSection: some View {
         HStack(spacing: 8) {
@@ -136,41 +158,32 @@ struct ContentView: View {
                     onSelect: { showEndPicker = false }
                 )
             }
-            Picker(selection: .constant(0), label:
+            Picker(selection: $selectedType, label:
                 HStack(spacing: 4) {
-                    Image(systemName: "bolt.fill")
+                    Image(systemName: selectedType.icon)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 20, height: 20)
-                    Text("類型")
+                    Text(selectedType.display)
                 }
                 .foregroundColor(Color.blue)
                 .frame(maxWidth: .infinity)
             ) {
-                HStack(spacing: 6) {
-                    Image(systemName: "bolt.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                    Text("類型")
-                }.tag(0)
-                HStack(spacing: 6) {
-                    Image(systemName: "bolt.horizontal.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                    Text("AC")
-                }.tag(1)
-                HStack(spacing: 6) {
-                    Image(systemName: "bolt.fill.batteryblock")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 18, height: 18)
-                    Text("DC")
-                }.tag(2)
+                ForEach(ChargeTypeFilter.allCases) { type in
+                    HStack(spacing: 6) {
+                        Image(systemName: type.icon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                        Text(type.display)
+                    }.tag(type)
+                }
             }
             .pickerStyle(MenuPickerStyle())
             .frame(maxWidth: .infinity, minHeight: 38)
+            .onChange(of: selectedType) { newType in
+                viewModel.chargeTypeFilter = newType.rawValue
+            }
         }
         .padding(.horizontal, 2)
     }

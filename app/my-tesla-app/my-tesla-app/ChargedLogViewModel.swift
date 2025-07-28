@@ -13,6 +13,8 @@ class ChargedLogViewModel: ObservableObject {
     // 日期篩選
     @Published var startDate: Date = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
     @Published var endDate: Date = Date()
+    // 類型篩選
+    @Published var chargeTypeFilter: String = "all" // "all", "ACSingleWireCAN", "Supercharger"
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -23,15 +25,18 @@ class ChargedLogViewModel: ObservableObject {
         return formatter
     }()
 
-    // 依據日期篩選後的資料
+    // 依據日期與類型篩選後的資料
     var logsFiltered: [ChargedLogEntry] {
         let formatter = Self.dateFormatter
         let start = startDate
         let end = endDate
+        let type = chargeTypeFilter
         var filtered: [ChargedLogEntry] = []
         for entry in logs {
             if let entryDate = formatter.date(from: entry.date) {
-                if entryDate >= start && entryDate <= end {
+                let dateInRange = entryDate >= start && entryDate <= end
+                let typeMatch = type == "all" || entry.chargeType == type
+                if dateInRange && typeMatch {
                     filtered.append(entry)
                 }
             }
