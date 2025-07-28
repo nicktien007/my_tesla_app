@@ -1,6 +1,7 @@
 # my-tesla-app Copilot 指南
 
 - 當需求異動的時候，評估是否調整 #PRD.md or .github/copilot-instructions.md 檔案。
+- 始終說繁體中文。
 
 ## 專案概覽
 - 這是一個使用 SwiftUI 開發的 iOS App，用於管理與瀏覽 Tesla 充電紀錄。
