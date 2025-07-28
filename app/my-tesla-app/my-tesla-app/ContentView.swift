@@ -15,6 +15,7 @@ enum SortOrder {
 
 import SwiftUI
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var sortKey: ChargedLogSortKey = .date
     @State private var sortOrder: SortOrder = .descending
     @StateObject private var viewModel = ChargedLogViewModel()
@@ -38,6 +39,11 @@ struct ContentView: View {
         .onAppear {
             viewModel.loadLogs()
         }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                viewModel.refreshIfNeeded()
+            }
+        }
     }
 
     private var headerSection: some View {
@@ -46,6 +52,14 @@ struct ContentView: View {
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
             Spacer()
+            Button(action: {
+                viewModel.manualRefresh()
+            }) {
+                Image(systemName: "arrow.clockwise")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(.blue)
+            }
+            .padding(.trailing, 8)
             Text("Hi, Nick")
                 .foregroundColor(.gray)
                 .font(.system(size: 16))

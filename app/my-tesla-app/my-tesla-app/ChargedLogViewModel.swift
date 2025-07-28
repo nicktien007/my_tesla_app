@@ -2,6 +2,10 @@ import Foundation
 import Combine
 
 class ChargedLogViewModel: ObservableObject {
+    /// 上次進入前景的時間
+    private var lastActiveDate: Date? = nil
+    /// 最小自動刷新間隔（秒）
+    let minRefreshInterval: TimeInterval = 600 // 10 分鐘
     @Published var logs: [ChargedLogEntry] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -49,6 +53,28 @@ class ChargedLogViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    /// 進入前景時自動更新查詢時間並刷新資料（有最小間隔限制）
+    func refreshIfNeeded(minInterval: TimeInterval? = nil) {
+        let now = Date()
+        let interval = minInterval ?? minRefreshInterval
+        if let last = lastActiveDate, now.timeIntervalSince(last) < interval {
+            // 未超過最小間隔，不刷新
+            return
+        }
+        lastActiveDate = now
+        self.endDate = now
+        loadLogs()
+    }
+
+    /// 手動刷新，無間隔限制，startDate 也重設為一個月前
+    func manualRefresh() {
+        let now = Date()
+        lastActiveDate = now
+        self.endDate = now
+        self.startDate = Calendar.current.date(byAdding: .month, value: -1, to: now) ?? now
+        loadLogs()
     }
 }
 
