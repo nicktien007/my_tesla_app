@@ -12,6 +12,9 @@
 - 支援離線快取最近一次資料。
 
 ## 3. API 資料來源與格式
+- 參考文檔：
+  - https://tw.wfublog.com/2022/05/sheet-api-read-google-spreadsheet-json.html
+  - https://developers.google.com/workspace/sheets?hl=zh-tw
 - 來源：Google Sheets API
 - ChargedLog Endpoint：
   https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/ChargedLog?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
