@@ -338,11 +338,18 @@ struct ContentView: View {
     }
 
     private var sortedLogs: [ChargedLogEntry] {
-        viewModel.logsFiltered.sorted { a, b in
+        let dateFormatter = ChargedLogViewModel.dateFormatter
+        return viewModel.logsFiltered.sorted { a, b in
             let cmp: ComparisonResult
             switch sortKey {
             case .date:
-                cmp = (a.date < b.date) ? .orderedAscending : (a.date > b.date ? .orderedDescending : .orderedSame)
+                let aDate = dateFormatter.date(from: a.date)
+                let bDate = dateFormatter.date(from: b.date)
+                if let aDate, let bDate {
+                    cmp = aDate.compare(bDate)
+                } else {
+                    cmp = (a.date < b.date) ? .orderedAscending : (a.date > b.date ? .orderedDescending : .orderedSame)
+                }
             case .chargedKWh:
                 let aVal = Double(a.chargedKWh ?? "") ?? 0
                 let bVal = Double(b.chargedKWh ?? "") ?? 0

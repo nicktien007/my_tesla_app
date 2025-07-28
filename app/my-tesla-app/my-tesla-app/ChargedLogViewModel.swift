@@ -17,7 +17,7 @@ class ChargedLogViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     // 日期格式化器（只初始化一次）
-    private static let dateFormatter: DateFormatter = {
+    static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd H:mm:ss"
         return formatter
