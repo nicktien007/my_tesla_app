@@ -18,7 +18,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var sortKey: ChargedLogSortKey = .date
     @State private var sortOrder: SortOrder = .descending
-    @StateObject private var viewModel = ChargedLogViewModel()
+    @ObservedObject private var viewModel = ChargedLogViewModel()
     @State private var selectedTab = 0 // 0: 紀錄, 1: 統計
 
     var body: some View {
@@ -71,13 +71,13 @@ struct ContentView: View {
     private var cardsSection: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("本月充電度數")
+                Text("查詢區間充電度數")
                     .font(.system(size: 15))
                     .foregroundColor(.gray)
-                Text("120.5 kWh")
+                Text(String(format: "%.1f kWh", viewModel.currentPeriodKWh))
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(.white)
-                Text("較上月 +8%")
+                Text(viewModel.kWhComparisonText)
                     .font(.system(size: 14))
                     .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
             }
