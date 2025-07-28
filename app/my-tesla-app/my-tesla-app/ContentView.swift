@@ -85,13 +85,22 @@ struct ContentView: View {
             .background(Color(red: 35/255, green: 38/255, blue: 47/255))
             .cornerRadius(18)
             VStack(alignment: .leading, spacing: 4) {
-                Text("本月充電費用")
+                Text("查詢區間充電費用")
                     .font(.system(size: 15))
                     .foregroundColor(.gray)
-                Text("$2520")
+                Text(String(format: "$%.0f", viewModel.currentPeriodCost))
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(.white)
-                Text("平均 $2.1 / kWh")
+                if let avg = viewModel.currentPeriodAvgCostPerKWh {
+                    Text(String(format: "平均 $%.2f / kWh", avg))
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                } else {
+                    Text("—")
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                }
+                Text(viewModel.costComparisonText)
                     .font(.system(size: 14))
                     .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
             }

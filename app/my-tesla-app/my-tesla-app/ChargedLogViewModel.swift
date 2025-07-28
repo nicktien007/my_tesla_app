@@ -49,6 +49,18 @@ class ChargedLogViewModel: ObservableObject {
         logsFiltered.compactMap { Double($0.chargedKWh ?? "") }.reduce(0, +)
     }
 
+    // 查詢區間總充電費用
+    var currentPeriodCost: Double {
+        logsFiltered.compactMap { Double($0.totalCost ?? "") }.reduce(0, +)
+    }
+
+    // 查詢區間平均每度電費用
+    var currentPeriodAvgCostPerKWh: Double? {
+        let kWh = currentPeriodKWh
+        guard kWh > 0 else { return nil }
+        return currentPeriodCost / kWh
+    }
+
     // 前一區間總充電度數
     var previousPeriodKWh: Double {
         let interval = endDate.timeIntervalSince(startDate)
@@ -61,7 +73,19 @@ class ChargedLogViewModel: ObservableObject {
         return prevLogs.compactMap { Double($0.chargedKWh ?? "") }.reduce(0, +)
     }
 
-    // 動態比較文字（含前期區間）
+    // 前一區間總充電費用
+    var previousPeriodCost: Double {
+        let interval = endDate.timeIntervalSince(startDate)
+        let prevEnd = Calendar.current.date(byAdding: .second, value: -1, to: startDate) ?? startDate
+        let prevStart = Calendar.current.date(byAdding: .second, value: -Int(interval), to: startDate) ?? startDate
+        let prevLogs = logs.filter { log in
+            guard let date = Self.dateFormatter.date(from: log.date) else { return false }
+            return date >= prevStart && date <= prevEnd
+        }
+        return prevLogs.compactMap { Double($0.totalCost ?? "") }.reduce(0, +)
+    }
+
+    // kWh 動態比較文字（含前期區間）
     var kWhComparisonText: String {
         let prev = previousPeriodKWh
         let curr = currentPeriodKWh
@@ -71,11 +95,28 @@ class ChargedLogViewModel: ObservableObject {
         let interval = endDate.timeIntervalSince(startDate)
         let prevEnd = Calendar.current.date(byAdding: .second, value: -1, to: startDate) ?? startDate
         let prevStart = Calendar.current.date(byAdding: .second, value: -Int(interval), to: startDate) ?? startDate
-    let formatter = DateFormatter()
-    formatter.dateFormat = "MM/dd"
-    let prevStartStr = formatter.string(from: prevStart)
-    let prevEndStr = formatter.string(from: prevEnd)
-    return "較前期 (\(prevStartStr)~\(prevEndStr)) \(sign)\(String(format: "%.1f", percent))%"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd"
+        let prevStartStr = formatter.string(from: prevStart)
+        let prevEndStr = formatter.string(from: prevEnd)
+        return "較前期 (\(prevStartStr)~\(prevEndStr)) \(sign)\(String(format: "%.1f", percent))%"
+    }
+
+    // 費用動態比較文字（含前期區間）
+    var costComparisonText: String {
+        let prev = previousPeriodCost
+        let curr = currentPeriodCost
+        guard prev > 0 else { return "—" }
+        let percent = ((curr - prev) / prev) * 100
+        let sign = percent >= 0 ? "+" : ""
+        let interval = endDate.timeIntervalSince(startDate)
+        let prevEnd = Calendar.current.date(byAdding: .second, value: -1, to: startDate) ?? startDate
+        let prevStart = Calendar.current.date(byAdding: .second, value: -Int(interval), to: startDate) ?? startDate
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd"
+        let prevStartStr = formatter.string(from: prevStart)
+        let prevEndStr = formatter.string(from: prevEnd)
+        return "較前期 (\(prevStartStr)~\(prevEndStr)) \(sign)\(String(format: "%.1f", percent))%"
     }
 
     func loadLogs() {
