@@ -2,7 +2,30 @@ import Foundation
 
 class ChargedLogService {
     static let shared = ChargedLogService()
-    private let endpoint = "https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/ChargedLog?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g"
+
+    private let spreadsheetId = "1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk"
+    private let chargedLogRange = "ChargedLog"
+    private let statisticsRange = "統計!A:H"
+
+    private let apiKey: String
+
+    init() {
+        // 讀取 Config.plist 內 GOOGLE_SHEETS_API_KEY
+        if let path = Bundle.main.path(forResource: "Config", ofType: "plist"),
+           let dict = NSDictionary(contentsOfFile: path),
+           let key = dict["GOOGLE_SHEETS_API_KEY"] as? String {
+            self.apiKey = key
+        } else {
+            self.apiKey = ""
+        }
+    }
+
+    private var chargedLogEndpoint: String {
+        "https://sheets.googleapis.com/v4/spreadsheets/\(spreadsheetId)/values/\(chargedLogRange)?key=\(apiKey)"
+    }
+    private var statisticsEndpoint: String {
+        "https://sheets.googleapis.com/v4/spreadsheets/\(spreadsheetId)/values/\(statisticsRange)?key=\(apiKey)"
+    }
 
     struct APIResponse: Codable {
         let range: String
@@ -11,7 +34,34 @@ class ChargedLogService {
     }
 
     func fetchChargedLogs(completion: @escaping (Result<[ChargedLogEntry], Error>) -> Void) {
-        guard let url = URL(string: endpoint) else {
+        guard let url = URL(string: chargedLogEndpoint) else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+
+        print("ChargedLog API URL: \(url.absoluteString)")
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No data", code: -2)))
+                return
+            }
+            do {
+                let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
+                let entries = self.parseRows(apiResponse.values)
+                completion(.success(entries))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+
+    func fetchStatistics(completion: @escaping (Result<APIResponse, Error>) -> Void) {
+        guard let url = URL(string: statisticsEndpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
         }
@@ -26,8 +76,7 @@ class ChargedLogService {
             }
             do {
                 let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-                let entries = self.parseRows(apiResponse.values)
-                completion(.success(entries))
+                completion(.success(apiResponse))
             } catch {
                 completion(.failure(error))
             }

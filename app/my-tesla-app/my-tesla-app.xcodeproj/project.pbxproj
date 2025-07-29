@@ -12,7 +12,7 @@
 			containerPortal = 01CCC84A2E3370EF00D6BEA6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 01CCC8512E3370EF00D6BEA6;
-			remoteInfo = "MyTesla";
+			remoteInfo = MyTesla;
 		};
 		01CCC86A2E3370F100D6BEA6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		01CCC8522E3370EF00D6BEA6 /* my-tesla-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "my-tesla-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		01CCC85F2E3370F100D6BEA6 /* my-tesla-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "my-tesla-appTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		01CCC8692E3370F100D6BEA6 /* my-tesla-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "my-tesla-appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC8522E3370EF00D6BEA6 /* my-tesla-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "my-tesla-app.app"; path = MyTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC85F2E3370F100D6BEA6 /* my-tesla-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "my-tesla-appTests.xctest"; path = MyTeslaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC8692E3370F100D6BEA6 /* my-tesla-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "my-tesla-appUITests.xctest"; path = MyTeslaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		01CCC8512E3370EF00D6BEA6 /* my-tesla-app */ = {
+		01CCC8512E3370EF00D6BEA6 /* MyTesla */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01CCC8732E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "my-tesla-app" */;
+			buildConfigurationList = 01CCC8732E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "MyTesla" */;
 			buildPhases = (
 				01CCC84E2E3370EF00D6BEA6 /* Sources */,
 				01CCC84F2E3370EF00D6BEA6 /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				01CCC8542E3370EF00D6BEA6 /* my-tesla-app */,
 			);
-			name = "MyTesla";
+			name = MyTesla;
 			packageProductDependencies = (
 			);
-			productName = "MyTesla";
+			productName = MyTesla;
 			productReference = 01CCC8522E3370EF00D6BEA6 /* my-tesla-app.app */;
 			productType = "com.apple.product-type.application";
 		};
-		01CCC85E2E3370F100D6BEA6 /* my-tesla-appTests */ = {
+		01CCC85E2E3370F100D6BEA6 /* MyTeslaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01CCC8762E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "my-tesla-appTests" */;
+			buildConfigurationList = 01CCC8762E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "MyTeslaTests" */;
 			buildPhases = (
 				01CCC85B2E3370F100D6BEA6 /* Sources */,
 				01CCC85C2E3370F100D6BEA6 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				01CCC8622E3370F100D6BEA6 /* my-tesla-appTests */,
 			);
-			name = "MyTeslaTests";
+			name = MyTeslaTests;
 			packageProductDependencies = (
 			);
-			productName = "MyTeslaTests";
+			productName = MyTeslaTests;
 			productReference = 01CCC85F2E3370F100D6BEA6 /* my-tesla-appTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		01CCC8682E3370F100D6BEA6 /* my-tesla-appUITests */ = {
+		01CCC8682E3370F100D6BEA6 /* MyTeslaUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01CCC8792E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "my-tesla-appUITests" */;
+			buildConfigurationList = 01CCC8792E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "MyTeslaUITests" */;
 			buildPhases = (
 				01CCC8652E3370F100D6BEA6 /* Sources */,
 				01CCC8662E3370F100D6BEA6 /* Frameworks */,
@@ -156,10 +156,10 @@
 			fileSystemSynchronizedGroups = (
 				01CCC86C2E3370F100D6BEA6 /* my-tesla-appUITests */,
 			);
-			name = "MyTeslaUITests";
+			name = MyTeslaUITests;
 			packageProductDependencies = (
 			);
-			productName = "MyTeslaUITests";
+			productName = MyTeslaUITests;
 			productReference = 01CCC8692E3370F100D6BEA6 /* my-tesla-appUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				01CCC8512E3370EF00D6BEA6 /* my-tesla-app */,
-				01CCC85E2E3370F100D6BEA6 /* my-tesla-appTests */,
-				01CCC8682E3370F100D6BEA6 /* my-tesla-appUITests */,
+				01CCC8512E3370EF00D6BEA6 /* MyTesla */,
+				01CCC85E2E3370F100D6BEA6 /* MyTeslaTests */,
+				01CCC8682E3370F100D6BEA6 /* MyTeslaUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		01CCC8612E3370F100D6BEA6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 01CCC8512E3370EF00D6BEA6 /* my-tesla-app */;
+			target = 01CCC8512E3370EF00D6BEA6 /* MyTesla */;
 			targetProxy = 01CCC8602E3370F100D6BEA6 /* PBXContainerItemProxy */;
 		};
 		01CCC86B2E3370F100D6BEA6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 01CCC8512E3370EF00D6BEA6 /* my-tesla-app */;
+			target = 01CCC8512E3370EF00D6BEA6 /* MyTesla */;
 			targetProxy = 01CCC86A2E3370F100D6BEA6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -409,7 +409,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "my-tesla-app.my-tesla-app";
-				PRODUCT_NAME = "MyTesla";
+				PRODUCT_NAME = MyTesla;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -524,7 +524,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01CCC8732E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "my-tesla-app" */ = {
+		01CCC8732E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "MyTesla" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01CCC8742E3370F100D6BEA6 /* Debug */,
@@ -533,7 +533,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01CCC8762E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "my-tesla-appTests" */ = {
+		01CCC8762E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "MyTeslaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01CCC8772E3370F100D6BEA6 /* Debug */,
@@ -542,7 +542,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01CCC8792E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "my-tesla-appUITests" */ = {
+		01CCC8792E3370F100D6BEA6 /* Build configuration list for PBXNativeTarget "MyTeslaUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01CCC87A2E3370F100D6BEA6 /* Debug */,
