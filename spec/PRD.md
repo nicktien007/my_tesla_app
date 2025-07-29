@@ -19,8 +19,8 @@
 - ChargedLog Endpoint：
   https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/ChargedLog?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
   
-  統計 endpoint：
-  https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/統計?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
+  Statistics endpoint：
+  https://sheets.googleapis.com/v4/spreadsheets/1f1yibdEzIu_z_Wvi9p2sU18v-15QQXjtK5DqjG-zOkk/values/統計!A:H?key=AIzaSyBDz-gD-vsou2sAwM-AqxONGy3vdCNT-0g
   
   統計 example.json：
   ```json
