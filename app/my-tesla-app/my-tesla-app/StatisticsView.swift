@@ -54,6 +54,13 @@ struct StatisticsView: View {
             }
         }
         .onAppear {
+            // 自動切換到「全部」+「近六個月」
+            if viewModel.selectedYear != "all" {
+                viewModel.selectedYear = "all"
+            }
+            if viewModel.selectedTimeRange != .sixMonths {
+                viewModel.selectedTimeRange = .sixMonths
+            }
             viewModel.loadStatistics()
         }
     }
