@@ -69,35 +69,51 @@ struct StatisticsView: View {
         HStack(spacing: 12) {
             // 年份選擇器
             if !viewModel.availableYears.isEmpty {
-                Picker("年份", selection: $viewModel.selectedYear) {
-                    ForEach(viewModel.availableYears, id: \.self) { year in
-                        Text(year == "all" ? "全部" : year)
-                            .foregroundColor(.white)
-                            .tag(year)
+                ZStack {
+                    // 透明區塊擴大觸發範圍
+                    Rectangle()
+                        .foregroundColor(.clear)
+                    Picker("年份", selection: $viewModel.selectedYear) {
+                        ForEach(viewModel.availableYears, id: \.self) { year in
+                            Text(year == "all" ? "全部" : year)
+                                .foregroundColor(.white)
+                                .tag(year)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .onChange(of: viewModel.selectedYear) { _ in
+                        viewModel.loadStatistics()
                     }
                 }
-                .pickerStyle(MenuPickerStyle())
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 12)
                 .background(Color(red: 35/255, green: 38/255, blue: 47/255))
                 .cornerRadius(8)
+                .contentShape(Rectangle())
             }
-            
             // 時間範圍選擇器
-            Picker("時間範圍", selection: $viewModel.selectedTimeRange) {
-                ForEach(StatisticsViewModel.TimeRangeFilter.allCases) { range in
-                    Text(range.display)
-                        .foregroundColor(.white)
-                        .tag(range)
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.clear)
+                Picker("時間範圍", selection: $viewModel.selectedTimeRange) {
+                    ForEach(StatisticsViewModel.TimeRangeFilter.allCases) { range in
+                        Text(range.display)
+                            .foregroundColor(.white)
+                            .tag(range)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .onChange(of: viewModel.selectedTimeRange) { _ in
+                    viewModel.loadStatistics()
                 }
             }
-            .pickerStyle(MenuPickerStyle())
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
             .padding(.horizontal, 12)
             .background(Color(red: 35/255, green: 38/255, blue: 47/255))
             .cornerRadius(8)
+            .contentShape(Rectangle())
         }
         .padding(.horizontal, 2)
     }
