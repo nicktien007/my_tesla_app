@@ -29,7 +29,6 @@ struct ContentView: View {
                 VStack(spacing: 18) {
                     headerSection
                     cardsSection
-                    filterBarSection
                     tabSection
                 }
                 .padding(.bottom, 32)
@@ -278,12 +277,16 @@ struct ContentView: View {
     
     // 紀錄 Tab 內容
     private var recordsTabContent: some View {
-        tableSection
+        VStack(spacing: 14) {
+            filterBarSection
+            tableSection
+        }
     }
     
     // 統計 Tab 內容
     private var statisticsTabContent: some View {
         VStack(spacing: 18) {
+            // 這裡可放統計查詢條件（如需）
             chartSection1
             chartSection2
         }
