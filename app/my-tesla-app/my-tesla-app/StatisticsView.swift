@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct StatisticsView: View {
-    @ObservedObject private var viewModel = StatisticsViewModel()
+    @ObservedObject var viewModel: StatisticsViewModel
     
     var body: some View {
         VStack(spacing: 20) {
@@ -157,7 +157,7 @@ struct StatisticsView_Previews: PreviewProvider {
         ZStack {
             Color(red: 24/255, green: 26/255, blue: 32/255)
                 .ignoresSafeArea()
-            StatisticsView()
+            StatisticsView(viewModel: StatisticsViewModel())
                 .padding()
         }
         .preferredColorScheme(.dark)

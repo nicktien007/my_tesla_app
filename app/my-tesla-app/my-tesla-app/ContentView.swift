@@ -19,6 +19,7 @@ struct ContentView: View {
     @State private var sortKey: ChargedLogSortKey = .date
     @State private var sortOrder: SortOrder = .descending
     @ObservedObject private var viewModel = ChargedLogViewModel()
+    @StateObject private var statisticsViewModel = StatisticsViewModel()
     @State private var selectedTab = 0 // 0: 紀錄, 1: 統計
 
     var body: some View {
@@ -28,7 +29,6 @@ struct ContentView: View {
             ScrollView {
                 VStack(spacing: 18) {
                     headerSection
-                    cardsSection
                     tabSection
                 }
                 .padding(.bottom, 32)
@@ -67,47 +67,6 @@ struct ContentView: View {
         .padding(.top, 8)
     }
 
-    private var cardsSection: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("查詢區間充電度數")
-                    .font(.system(size: 15))
-                    .foregroundColor(.gray)
-                Text(String(format: "%.1f kWh", viewModel.currentPeriodKWh))
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundColor(.white)
-                Text(viewModel.kWhComparisonText)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
-            }
-            .padding()
-            .background(Color(red: 35/255, green: 38/255, blue: 47/255))
-            .cornerRadius(18)
-            VStack(alignment: .leading, spacing: 4) {
-                Text("查詢區間充電費用")
-                    .font(.system(size: 15))
-                    .foregroundColor(.gray)
-                Text(String(format: "$%.0f", viewModel.currentPeriodCost))
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundColor(.white)
-                if let avg = viewModel.currentPeriodAvgCostPerKWh {
-                    Text(String(format: "平均 $%.2f / kWh", avg))
-                        .font(.system(size: 14))
-                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
-                } else {
-                    Text("—")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
-                }
-                Text(viewModel.costComparisonText)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
-            }
-            .padding()
-            .background(Color(red: 35/255, green: 38/255, blue: 47/255))
-            .cornerRadius(18)
-        }
-    }
 
     @State private var showStartPicker = false
     @State private var showEndPicker = false
@@ -278,6 +237,46 @@ struct ContentView: View {
     // 紀錄 Tab 內容
     private var recordsTabContent: some View {
         VStack(spacing: 14) {
+            // 新增 summary 卡片
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("查詢區間充電度數")
+                        .font(.system(size: 15))
+                        .foregroundColor(.gray)
+                    Text(String(format: "%.1f kWh", viewModel.currentPeriodKWh))
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.white)
+                    Text(viewModel.kWhComparisonText)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                }
+                .padding()
+                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                .cornerRadius(18)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("查詢區間充電費用")
+                        .font(.system(size: 15))
+                        .foregroundColor(.gray)
+                    Text(String(format: "$%.0f", viewModel.currentPeriodCost))
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(.white)
+                    if let avg = viewModel.currentPeriodAvgCostPerKWh {
+                        Text(String(format: "平均 $%.2f / kWh", avg))
+                            .font(.system(size: 14))
+                            .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                    } else {
+                        Text("—")
+                            .font(.system(size: 14))
+                            .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                    }
+                    Text(viewModel.costComparisonText)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                }
+                .padding()
+                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                .cornerRadius(18)
+            }
             filterBarSection
             tableSection
         }
@@ -285,7 +284,7 @@ struct ContentView: View {
     
     // 統計 Tab 內容
     private var statisticsTabContent: some View {
-        StatisticsView()
+        StatisticsView(viewModel: statisticsViewModel)
     }
 
     private var tableSection: some View {
