@@ -60,11 +60,14 @@ class ChargedLogService {
         }.resume()
     }
 
-    func fetchStatistics(completion: @escaping (Result<APIResponse, Error>) -> Void) {
+    func fetchStatistics(completion: @escaping (Result<[StatisticsEntry], Error>) -> Void) {
         guard let url = URL(string: statisticsEndpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
         }
+        
+        print("Statistics API URL: \(url.absoluteString)")
+        
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -76,7 +79,8 @@ class ChargedLogService {
             }
             do {
                 let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-                completion(.success(apiResponse))
+                let entries = self.parseStatisticsRows(apiResponse.values)
+                completion(.success(entries))
             } catch {
                 completion(.failure(error))
             }
@@ -89,27 +93,39 @@ class ChargedLogService {
         let dataRows = rows.dropFirst()
         // 新欄位名稱完全比對 API header
         let totalMileageKey = "總里程(km)"
-    // let efficiencyKey = "電耗(km/kwh)" // 已移除
+        // let efficiencyKey = "電耗(km/kwh)" // 已移除
         let pricePerKWhKey = "價格 / kwh"
-    let mileageKey = "階段里程"
+        let mileageKey = "階段里程"
         return dataRows.compactMap { row in
             ChargedLogEntry(
-                date: row[safe: header.firstIndex(of: "日期") ?? 0] ?? "",
-                totalMileage: row[safe: header.firstIndex(of: totalMileageKey) ?? 1],
+                date: (header.firstIndex(of: "日期").flatMap { row[$0] }) ?? "",
+                totalMileage: header.firstIndex(of: totalMileageKey).flatMap { row[$0] },
                 stageMileage: nil,
-                chargedKWh: row[safe: header.firstIndex(of: "充電度數") ?? 3],
-                mileage: row[safe: header.firstIndex(of: mileageKey) ?? 2],
-                pricePerKWh: row[safe: header.firstIndex(of: pricePerKWhKey) ?? 5],
-                totalCost: row[safe: header.firstIndex(of: "總費用") ?? 6],
-                chargeType: row[safe: header.firstIndex(of: "充電類型") ?? 7]
+                chargedKWh: header.firstIndex(of: "充電度數").flatMap { row[$0] },
+                mileage: header.firstIndex(of: mileageKey).flatMap { row[$0] },
+                pricePerKWh: header.firstIndex(of: pricePerKWhKey).flatMap { row[$0] },
+                totalCost: header.firstIndex(of: "總費用").flatMap { row[$0] },
+                chargeType: header.firstIndex(of: "充電類型").flatMap { row[$0] }
             )
         }
     }
-}
 
-// Array safe index extension
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
+    private func parseStatisticsRows(_ rows: [[String]]) -> [StatisticsEntry] {
+        guard rows.count > 1 else { return [] }
+        let header = rows[0]
+        let dataRows = rows.dropFirst()
+        
+        return dataRows.compactMap { row in
+            StatisticsEntry(
+                date: (header.firstIndex(of: "日期").flatMap { row[$0] }) ?? "",
+                year: (header.firstIndex(of: "年").flatMap { row[$0] }) ?? "",
+                month: (header.firstIndex(of: "月").flatMap { row[$0] }) ?? "",
+                stageMileage: header.firstIndex(of: "統計階段里程(KM)").flatMap { row[$0] },
+                chargedKWh: header.firstIndex(of: "統計充電度數").flatMap { row[$0] },
+                avgEfficiency: header.firstIndex(of: "統計平均電耗(km/kwh)").flatMap { row[$0] },
+                avgPricePerKWh: header.firstIndex(of: "統計平均每度價格").flatMap { row[$0] },
+                totalCost: header.firstIndex(of: "統計總費用").flatMap { row[$0] }
+            )
+        }
     }
 }

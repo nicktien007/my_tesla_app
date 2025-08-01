@@ -285,11 +285,7 @@ struct ContentView: View {
     
     // 統計 Tab 內容
     private var statisticsTabContent: some View {
-        VStack(spacing: 18) {
-            // 這裡可放統計查詢條件（如需）
-            chartSection1
-            chartSection2
-        }
+        StatisticsView()
     }
 
     private var tableSection: some View {
