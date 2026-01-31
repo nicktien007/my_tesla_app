@@ -8,6 +8,14 @@
 
 ## [Unreleased]
 
+### Changed
+- **手動新增充電紀錄 API 改為 POST**
+  - 將 API 請求方法從 GET 改為 POST
+  - 使用 JSON body 傳送參數（p, t, method）
+  - 設定 Content-Type 為 `text/plain;charset=utf-8` 避免 GAS 跨域 CORS 問題
+  - 更新 `AddChargeRecordViewModel.swift` 實作
+  - 更新 `手動新增充電紀錄.md` 規格書
+
 ---
 
 ## [1.4.0] - 2026-02-01
