@@ -119,12 +119,14 @@ struct ContentView: View {
         case all = "all"
         case ac = "ACSingleWireCAN"
         case dc = "Supercharger"
+        case j1772 = "J1772"
         var id: String { rawValue }
         var display: String {
             switch self {
             case .all: return "全部"
             case .ac: return "AC"
             case .dc: return "DC"
+            case .j1772: return "J1772"
             }
         }
         var icon: String {
@@ -132,6 +134,7 @@ struct ContentView: View {
             case .all: return "bolt.fill"
             case .ac: return "bolt.horizontal.fill"
             case .dc: return "bolt.fill.batteryblock"
+            case .j1772: return "ev.plug.ac.type.1"
             }
         }
     }
@@ -393,11 +396,12 @@ struct ContentView: View {
                     }
                     .cornerRadius(12)
                 }
-                .frame(height: CGFloat(sortedLogs.count * 40 + 50)) // 動態高度
+                .frame(height: min(CGFloat(sortedLogs.count * 40 + 50), 600)) // 動態高度，最大 600
                 .cornerRadius(12)
             }
         }
         .padding(.horizontal, 2)
+        .frame(minHeight: 100) // 確保最小高度
     }
 
     private var sortedLogs: [ChargedLogEntry] {
@@ -473,6 +477,7 @@ struct ContentView: View {
         switch raw {
         case "Supercharger": return "DC"
         case "ACSingleWireCAN": return "AC"
+        case "J1772": return "J1772"
         default: return raw ?? ""
         }
     }

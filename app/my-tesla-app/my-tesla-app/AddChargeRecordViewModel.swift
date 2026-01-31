@@ -19,7 +19,7 @@ enum ChargeType: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .acSingleWireCAN: return "AC"
-        case .supercharger: return "DC (Supercharger)"
+        case .supercharger: return "DC"
         case .j1772: return "J1772"
         }
     }
