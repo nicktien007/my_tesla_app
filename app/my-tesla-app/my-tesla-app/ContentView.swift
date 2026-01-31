@@ -16,6 +16,7 @@ enum SortOrder {
 import SwiftUI
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @ObservedObject private var theme = AppTheme.shared
     @State private var sortKey: ChargedLogSortKey = .date
     @State private var sortOrder: SortOrder = .descending
     @ObservedObject private var viewModel = ChargedLogViewModel()
@@ -25,8 +26,9 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 24/255, green: 26/255, blue: 32/255)
+            theme.backgroundColor
                 .ignoresSafeArea()
+                .animation(.easeInOut(duration: 0.3), value: theme.mode)
             ScrollView {
                 VStack(spacing: 18) {
                     headerSection
@@ -49,7 +51,7 @@ struct ContentView: View {
                                 .font(.system(size: 24, weight: .bold))
                                 .foregroundColor(.white)
                                 .frame(width: 56, height: 56)
-                                .background(Color(red: 94/255, green: 96/255, blue: 206/255))
+                                .background(AppTheme.accentPurple)
                                 .clipShape(Circle())
                                 .shadow(color: Color.black.opacity(0.3), radius: 4, x: 0, y: 2)
                         }
@@ -79,8 +81,19 @@ struct ContentView: View {
         HStack {
             Text("MYTESLA")
                 .font(.system(size: 24, weight: .bold))
-                .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                .foregroundColor(AppTheme.teslaRed)
             Spacer()
+            // 深淺色模式切換按鈕
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    theme.toggle()
+                }
+            }) {
+                Image(systemName: theme.toggleIcon)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(theme.toggleIconColor)
+            }
+            .padding(.trailing, 4)
             Button(action: {
                 viewModel.manualRefresh()
             }) {
@@ -90,7 +103,7 @@ struct ContentView: View {
             }
             .padding(.trailing, 8)
             Text("Hi, Nick")
-                .foregroundColor(.gray)
+                .foregroundColor(theme.secondaryTextColor)
                 .font(.system(size: 16))
         }
         .padding(.horizontal, 4)
@@ -233,25 +246,25 @@ struct ContentView: View {
                 Button(action: { selectedTab = 0 }) {
                     Text("紀錄")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(selectedTab == 0 ? .white : .gray)
+                        .foregroundColor(selectedTab == 0 ? .white : theme.secondaryTextColor)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(selectedTab == 0 ? Color(red: 94/255, green: 96/255, blue: 206/255) : Color.clear)
+                        .background(selectedTab == 0 ? AppTheme.accentPurple : Color.clear)
                         .cornerRadius(8)
                 }
                 
                 Button(action: { selectedTab = 1 }) {
                     Text("統計")
                         .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(selectedTab == 1 ? .white : .gray)
+                        .foregroundColor(selectedTab == 1 ? .white : theme.secondaryTextColor)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(selectedTab == 1 ? Color(red: 94/255, green: 96/255, blue: 206/255) : Color.clear)
+                        .background(selectedTab == 1 ? AppTheme.accentPurple : Color.clear)
                         .cornerRadius(8)
                 }
             }
             .padding(4)
-            .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+            .background(theme.cardBackgroundColor)
             .cornerRadius(12)
             
             // Tab 內容
@@ -272,39 +285,39 @@ struct ContentView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("查詢區間充電度數")
                         .font(.system(size: 15))
-                        .foregroundColor(.gray)
+                        .foregroundColor(theme.secondaryTextColor)
                     Text(String(format: "%.1f kWh", viewModel.currentPeriodKWh))
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(theme.primaryTextColor)
                     Text(viewModel.kWhComparisonText)
                         .font(.system(size: 14))
-                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                        .foregroundColor(AppTheme.teslaRed)
                 }
                 .padding()
-                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                .background(theme.cardBackgroundColor)
                 .cornerRadius(18)
                 VStack(alignment: .leading, spacing: 4) {
                     Text("查詢區間充電費用")
                         .font(.system(size: 15))
-                        .foregroundColor(.gray)
+                        .foregroundColor(theme.secondaryTextColor)
                     Text(String(format: "$%.0f", viewModel.currentPeriodCost))
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(theme.primaryTextColor)
                     if let avg = viewModel.currentPeriodAvgCostPerKWh {
                         Text(String(format: "平均 $%.2f / kWh", avg))
                             .font(.system(size: 14))
-                            .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                            .foregroundColor(AppTheme.teslaRed)
                     } else {
                         Text("—")
                             .font(.system(size: 14))
-                            .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                            .foregroundColor(AppTheme.teslaRed)
                     }
                     Text(viewModel.costComparisonText)
                         .font(.system(size: 14))
-                        .foregroundColor(Color(red: 232/255, green: 33/255, blue: 39/255))
+                        .foregroundColor(AppTheme.teslaRed)
                 }
                 .padding()
-                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                .background(theme.cardBackgroundColor)
                 .cornerRadius(18)
             }
             filterBarSection
@@ -314,7 +327,7 @@ struct ContentView: View {
     
     // 統計 Tab 內容
     private var statisticsTabContent: some View {
-        StatisticsView(viewModel: statisticsViewModel)
+        StatisticsView(viewModel: statisticsViewModel, theme: theme)
     }
 
     private var tableSection: some View {
@@ -332,7 +345,7 @@ struct ContentView: View {
                     .padding()
             } else if viewModel.logsFiltered.isEmpty {
                 Text("尚無資料")
-                    .foregroundColor(.gray)
+                    .foregroundColor(theme.secondaryTextColor)
                     .padding()
             } else {
                 GeometryReader { geometry in
@@ -352,11 +365,11 @@ struct ContentView: View {
                             Text("類型")
                                 .frame(width: typeWidth, alignment: .center)
                         }
-                        .foregroundColor(.gray)
+                        .foregroundColor(theme.secondaryTextColor)
                         .font(.system(size: 14, weight: .medium))
                         .padding(.vertical, 8)
                         .padding(.horizontal, 8)
-                        .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                        .background(theme.cardBackgroundColor)
 
                         ForEach(Array(sortedLogs.enumerated()), id: \.element.id) { i, log in
                             HStack(spacing: 0) {
@@ -372,10 +385,10 @@ struct ContentView: View {
                                     .frame(width: typeWidth, alignment: .center)
                             }
                             .font(.system(size: 14))
-                            .foregroundColor(.white)
+                            .foregroundColor(theme.primaryTextColor)
                             .padding(.vertical, 6)
                             .padding(.horizontal, 8)
-                            .background(i % 2 == 0 ? Color(red: 35/255, green: 38/255, blue: 47/255) : Color(red: 27/255, green: 29/255, blue: 35/255))
+                            .background(i % 2 == 0 ? theme.cardBackgroundColor : theme.tableAlternateRowColor)
                         }
                     }
                     .cornerRadius(12)

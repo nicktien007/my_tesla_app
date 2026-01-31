@@ -10,6 +10,7 @@ import SwiftUI
 struct AddChargeRecordView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AddChargeRecordViewModel()
+    @ObservedObject private var theme = AppTheme.shared
     
     /// 成功後的回調
     var onSuccess: (() -> Void)?
@@ -18,7 +19,7 @@ struct AddChargeRecordView: View {
         NavigationView {
             ZStack {
                 // 背景色
-                Color(red: 24/255, green: 26/255, blue: 32/255)
+                theme.backgroundColor
                     .ignoresSafeArea()
                 
                 VStack(spacing: 24) {
@@ -68,21 +69,21 @@ struct AddChargeRecordView: View {
     private var priceInputSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("價格 / kWh")
-                .foregroundColor(.gray)
+                .foregroundColor(theme.secondaryTextColor)
                 .font(.system(size: 15, weight: .medium))
             
             // 數字輸入框
             TextField("輸入價格", text: $viewModel.priceText)
                 .keyboardType(.decimalPad)
                 .padding()
-                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                .background(theme.inputBackgroundColor)
                 .cornerRadius(12)
-                .foregroundColor(.white)
+                .foregroundColor(theme.primaryTextColor)
                 .font(.system(size: 18))
             
             // 常用價格選項
             Text("常用價格")
-                .foregroundColor(.gray)
+                .foregroundColor(theme.secondaryTextColor)
                 .font(.system(size: 13))
             
             LazyVGrid(columns: [
@@ -102,8 +103,8 @@ struct AddChargeRecordView: View {
                             .padding(.vertical, 10)
                             .background(
                                 isSelectedPrice(price)
-                                    ? Color(red: 94/255, green: 96/255, blue: 206/255)
-                                    : Color(red: 35/255, green: 38/255, blue: 47/255)
+                                    ? AppTheme.accentPurple
+                                    : theme.inputBackgroundColor
                             )
                             .cornerRadius(8)
                     }
@@ -116,7 +117,7 @@ struct AddChargeRecordView: View {
     private var chargeTypeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("充電類型")
-                .foregroundColor(.gray)
+                .foregroundColor(theme.secondaryTextColor)
                 .font(.system(size: 15, weight: .medium))
             
             Picker("充電類型", selection: $viewModel.selectedChargeType) {
@@ -150,7 +151,7 @@ struct AddChargeRecordView: View {
             .padding(.vertical, 16)
             .background(
                 viewModel.canSubmit
-                    ? Color(red: 94/255, green: 96/255, blue: 206/255)
+                    ? AppTheme.accentPurple
                     : Color.gray.opacity(0.5)
             )
             .cornerRadius(12)

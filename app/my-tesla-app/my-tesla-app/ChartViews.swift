@@ -3,6 +3,7 @@ import SwiftUI
 // 月度充電量條狀圖
 struct MonthlyChargedChart: View {
     let data: [(month: String, value: Double)]
+    @ObservedObject var theme: AppTheme
     
     private var maxValue: Double {
         data.map { $0.value }.max() ?? 1
@@ -12,11 +13,11 @@ struct MonthlyChargedChart: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("月度充電量")
                 .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.white)
+                .foregroundColor(theme.primaryTextColor)
             
             if data.isEmpty {
                 Text("暫無資料")
-                    .foregroundColor(.gray)
+                    .foregroundColor(theme.secondaryTextColor)
                     .frame(maxWidth: .infinity, minHeight: 120)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -26,13 +27,13 @@ struct MonthlyChargedChart: View {
                                 // 數值標籤
                                 Text(String(format: "%.1f", item.value))
                                     .font(.system(size: 10))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(theme.secondaryTextColor)
                                 
                                 // 條狀圖
                                 RoundedRectangle(cornerRadius: 4)
                                     .fill(LinearGradient(
                                         gradient: Gradient(colors: [
-                                            Color(red: 94/255, green: 96/255, blue: 206/255),
+                                            AppTheme.accentPurple,
                                             Color(red: 150/255, green: 152/255, blue: 255/255)
                                         ]),
                                         startPoint: .bottom,
@@ -43,7 +44,7 @@ struct MonthlyChargedChart: View {
                                 // 月份標籤
                                 Text(formatMonth(item.month))
                                     .font(.system(size: 9))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(theme.secondaryTextColor)
                                     .rotationEffect(.degrees(-45))
                                     .frame(width: 35, height: 25)
                                     .fixedSize(horizontal: true, vertical: false)
@@ -57,7 +58,7 @@ struct MonthlyChargedChart: View {
             }
         }
         .padding()
-        .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+        .background(theme.cardBackgroundColor)
         .cornerRadius(12)
     }
     
@@ -76,6 +77,7 @@ struct MonthlyChargedChart: View {
 // 效率與費用散點圖
 struct EfficiencyVsCostChart: View {
     let data: [(efficiency: Double, cost: Double, month: String)]
+    @ObservedObject var theme: AppTheme
     
     private var maxEfficiency: Double {
         data.map { $0.efficiency }.max() ?? 1
@@ -89,11 +91,11 @@ struct EfficiencyVsCostChart: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("電耗效率 vs 費用趨勢")
                 .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.white)
+                .foregroundColor(theme.primaryTextColor)
             
             if data.isEmpty {
                 Text("暫無資料")
-                    .foregroundColor(.gray)
+                    .foregroundColor(theme.secondaryTextColor)
                     .frame(maxWidth: .infinity, minHeight: 120)
             } else {
                 GeometryReader { geometry in
@@ -134,7 +136,7 @@ struct EfficiencyVsCostChart: View {
                                     }
                                 }
                             }
-                            .stroke(Color(red: 232/255, green: 33/255, blue: 39/255), lineWidth: 2)
+                            .stroke(AppTheme.teslaRed, lineWidth: 2)
                         }
                         
                         // 資料點
@@ -143,13 +145,13 @@ struct EfficiencyVsCostChart: View {
                             let y = 20 + chartHeight - (point.cost / maxCost) * chartHeight
                             
                             Circle()
-                                .fill(Color(red: 94/255, green: 96/255, blue: 206/255))
+                                .fill(AppTheme.accentPurple)
                                 .frame(width: 8, height: 8)
                                 .position(x: x, y: y)
                                 .overlay(
                                     Text(formatMonth(point.month))
                                         .font(.system(size: 8))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(theme.primaryTextColor)
                                         .offset(x: x < chartWidth / 2 ? 15 : -15, y: -10)
                                         .position(x: x, y: y)
                                 )
@@ -161,7 +163,7 @@ struct EfficiencyVsCostChart: View {
                                 let value = maxCost * Double(4 - i) / 4
                                 Text(String(format: "%.0f", value))
                                     .font(.system(size: 10))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(theme.secondaryTextColor)
                                     .frame(maxHeight: .infinity)
                             }
                         }
@@ -174,7 +176,7 @@ struct EfficiencyVsCostChart: View {
                                 let value = maxEfficiency * Double(i) / 4
                                 Text(String(format: "%.1f", value))
                                     .font(.system(size: 10))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(theme.secondaryTextColor)
                                     .frame(maxWidth: .infinity)
                             }
                         }
@@ -188,29 +190,29 @@ struct EfficiencyVsCostChart: View {
                 HStack {
                     HStack(spacing: 4) {
                         Circle()
-                            .fill(Color(red: 94/255, green: 96/255, blue: 206/255))
+                            .fill(AppTheme.accentPurple)
                             .frame(width: 8, height: 8)
                         Text("電耗效率 (km/kWh)")
                             .font(.system(size: 10))
-                            .foregroundColor(.gray)
+                            .foregroundColor(theme.secondaryTextColor)
                     }
                     
                     Spacer()
                     
                     HStack(spacing: 4) {
                         Rectangle()
-                            .fill(Color(red: 232/255, green: 33/255, blue: 39/255))
+                            .fill(AppTheme.teslaRed)
                             .frame(width: 12, height: 2)
                         Text("費用 ($)")
                             .font(.system(size: 10))
-                            .foregroundColor(.gray)
+                            .foregroundColor(theme.secondaryTextColor)
                     }
                 }
                 .padding(.horizontal)
             }
         }
         .padding()
-        .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+        .background(theme.cardBackgroundColor)
         .cornerRadius(12)
     }
     
@@ -226,16 +228,17 @@ struct StatisticsSummaryCard: View {
     let value: String
     let subtitle: String?
     let color: Color
+    @ObservedObject var theme: AppTheme
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.system(size: 14))
-                .foregroundColor(.gray)
+                .foregroundColor(theme.secondaryTextColor)
             
             Text(value)
                 .font(.system(size: 20, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(theme.primaryTextColor)
             
             if let subtitle = subtitle {
                 Text(subtitle)
@@ -245,7 +248,7 @@ struct StatisticsSummaryCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+        .background(theme.cardBackgroundColor)
         .cornerRadius(12)
     }
 }

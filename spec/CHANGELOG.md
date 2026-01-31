@@ -8,8 +8,22 @@
 
 ## [Unreleased]
 
-### Planned
-- 深色/淺色模式切換功能
+---
+
+## [1.4.0] - 2026-02-01
+
+### Added
+- **深色/淺色模式切換功能**
+  - 新增 `AppTheme.swift` 統一管理主題色彩
+  - 首頁右上角新增模式切換按鈕（太陽/月亮圖示）
+  - 支援平滑動畫過渡效果
+  - 使用 UserDefaults 儲存用戶偏好設定
+  - 所有頁面（ContentView、StatisticsView、AddChargeRecordView、ChartViews）套用主題系統
+
+### Documentation
+- 新增 `COMMIT_CONVENTION.md` Git commit 訊息規範
+- 新增 `dark-light-mode.md` 深淺色模式功能規格書
+- 更新 `copilot-instructions.md` 指定 commit 規範參考
 
 ---
 

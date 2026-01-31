@@ -2,6 +2,7 @@ import SwiftUI
 
 struct StatisticsView: View {
     @ObservedObject var viewModel: StatisticsViewModel
+    @ObservedObject var theme: AppTheme
     
     var body: some View {
         VStack(spacing: 20) {
@@ -35,7 +36,7 @@ struct StatisticsView: View {
                     .padding()
             } else if viewModel.filteredStatistics.isEmpty {
                 Text("暫無統計資料")
-                    .foregroundColor(.gray)
+                    .foregroundColor(theme.secondaryTextColor)
                     .padding()
             } else {
                 ScrollView {
@@ -44,10 +45,10 @@ struct StatisticsView: View {
                         summarySection
                         
                         // 月度充電量圖表
-                        MonthlyChargedChart(data: viewModel.monthlyChargedData)
+                        MonthlyChargedChart(data: viewModel.monthlyChargedData, theme: theme)
                         
                         // 效率與費用趨勢圖
-                        EfficiencyVsCostChart(data: viewModel.efficiencyVsCostData)
+                        EfficiencyVsCostChart(data: viewModel.efficiencyVsCostData, theme: theme)
                     }
                     .padding(.bottom, 20)
                 }
@@ -88,7 +89,7 @@ struct StatisticsView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 12)
-                .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+                .background(theme.cardBackgroundColor)
                 .cornerRadius(8)
                 .contentShape(Rectangle())
             }
@@ -99,7 +100,7 @@ struct StatisticsView: View {
                 Picker("時間範圍", selection: $viewModel.selectedTimeRange) {
                     ForEach(StatisticsViewModel.TimeRangeFilter.allCases) { range in
                         Text(range.display)
-                            .foregroundColor(.white)
+                            .foregroundColor(theme.primaryTextColor)
                             .tag(range)
                     }
                 }
@@ -111,7 +112,7 @@ struct StatisticsView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
             .padding(.horizontal, 12)
-            .background(Color(red: 35/255, green: 38/255, blue: 47/255))
+            .background(theme.cardBackgroundColor)
             .cornerRadius(8)
             .contentShape(Rectangle())
         }
@@ -124,28 +125,32 @@ struct StatisticsView: View {
                 title: "總充電量",
                 value: String(format: "%.1f kWh", viewModel.totalChargedKWh),
                 subtitle: "查詢期間累計",
-                color: Color(red: 94/255, green: 96/255, blue: 206/255)
+                color: AppTheme.accentPurple,
+                theme: theme
             )
             
             StatisticsSummaryCard(
                 title: "總費用",
                 value: String(format: "$%.0f", viewModel.totalCost),
                 subtitle: "查詢期間累計",
-                color: Color(red: 232/255, green: 33/255, blue: 39/255)
+                color: AppTheme.teslaRed,
+                theme: theme
             )
             
             StatisticsSummaryCard(
                 title: "總里程",
                 value: String(format: "%.0f km", viewModel.totalMileage),
                 subtitle: "查詢期間累計",
-                color: Color.green
+                color: Color.green,
+                theme: theme
             )
             
             StatisticsSummaryCard(
                 title: "平均電耗",
                 value: String(format: "%.2f km/kWh", viewModel.averageEfficiency),
                 subtitle: "期間平均值",
-                color: Color.orange
+                color: Color.orange,
+                theme: theme
             )
         }
         .padding(.horizontal, 2)
@@ -157,7 +162,7 @@ struct StatisticsView_Previews: PreviewProvider {
         ZStack {
             Color(red: 24/255, green: 26/255, blue: 32/255)
                 .ignoresSafeArea()
-            StatisticsView(viewModel: StatisticsViewModel())
+            StatisticsView(viewModel: StatisticsViewModel(), theme: AppTheme.shared)
                 .padding()
         }
         .preferredColorScheme(.dark)
