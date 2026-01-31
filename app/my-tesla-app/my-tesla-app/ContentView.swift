@@ -351,57 +351,52 @@ struct ContentView: View {
                     .foregroundColor(theme.secondaryTextColor)
                     .padding()
             } else {
-                GeometryReader { geometry in
-                    let totalWidth = geometry.size.width - 16 // 減去 padding
-                    let dateWidth = totalWidth * 0.25     // 25% 給日期
-                    let numberWidth = totalWidth * 0.18   // 18% 給度數
-                    let mileageWidth = totalWidth * 0.18   // 18% 給里程
-                    let priceWidth = totalWidth * 0.24     // 24% 給費用
-                    let typeWidth = totalWidth * 0.15      // 15% 給類型
+                let totalWidth = UIScreen.main.bounds.width - 40 // Screen width - standard padding (8+2+2 on each side + internal adjustments)
+                let dateWidth = totalWidth * 0.25     // 25% 給日期
+                let numberWidth = totalWidth * 0.18   // 18% 給度數
+                let mileageWidth = totalWidth * 0.18   // 18% 給里程
+                let priceWidth = totalWidth * 0.24     // 24% 給費用
+                let typeWidth = totalWidth * 0.15      // 15% 給類型
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: 0) {
+                        sortableHeader(title: "日期", key: .date, width: dateWidth, alignment: .leading)
+                        sortableHeader(title: "度數", key: .chargedKWh, width: numberWidth, alignment: .center)
+                        sortableHeader(title: "里程", key: .mileage, width: mileageWidth, alignment: .center)
+                        sortableHeader(title: "費用", key: .totalCost, width: priceWidth, alignment: .center)
+                        Text("類型")
+                            .frame(width: typeWidth, alignment: .center)
+                    }
+                    .foregroundColor(theme.secondaryTextColor)
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 8)
+                    .background(theme.cardBackgroundColor)
 
-                    VStack(alignment: .leading, spacing: 0) {
+                    ForEach(Array(sortedLogs.enumerated()), id: \.element.id) { i, log in
                         HStack(spacing: 0) {
-                            sortableHeader(title: "日期", key: .date, width: dateWidth, alignment: .leading)
-                            sortableHeader(title: "度數", key: .chargedKWh, width: numberWidth, alignment: .center)
-                            sortableHeader(title: "里程", key: .mileage, width: mileageWidth, alignment: .center)
-                            sortableHeader(title: "費用", key: .totalCost, width: priceWidth, alignment: .center)
-                            Text("類型")
+                            Text(shortDate(log.date))
+                                .frame(width: dateWidth, alignment: .leading)
+                            Text(log.chargedKWh ?? "")
+                                .frame(width: numberWidth, alignment: .center)
+                            Text(log.mileage ?? "")
+                                .frame(width: mileageWidth, alignment: .center)
+                            Text("$\(log.totalCost ?? "")")
+                                .frame(width: priceWidth, alignment: .center)
+                            Text(typeDisplayName(log.chargeType))
                                 .frame(width: typeWidth, alignment: .center)
                         }
-                        .foregroundColor(theme.secondaryTextColor)
-                        .font(.system(size: 14, weight: .medium))
-                        .padding(.vertical, 8)
+                        .font(.system(size: 14))
+                        .foregroundColor(theme.primaryTextColor)
+                        .padding(.vertical, 6)
                         .padding(.horizontal, 8)
-                        .background(theme.cardBackgroundColor)
-
-                        ForEach(Array(sortedLogs.enumerated()), id: \.element.id) { i, log in
-                            HStack(spacing: 0) {
-                                Text(shortDate(log.date))
-                                    .frame(width: dateWidth, alignment: .leading)
-                                Text(log.chargedKWh ?? "")
-                                    .frame(width: numberWidth, alignment: .center)
-                                Text(log.mileage ?? "")
-                                    .frame(width: mileageWidth, alignment: .center)
-                                Text("$\(log.totalCost ?? "")")
-                                    .frame(width: priceWidth, alignment: .center)
-                                Text(typeDisplayName(log.chargeType))
-                                    .frame(width: typeWidth, alignment: .center)
-                            }
-                            .font(.system(size: 14))
-                            .foregroundColor(theme.primaryTextColor)
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 8)
-                            .background(i % 2 == 0 ? theme.cardBackgroundColor : theme.tableAlternateRowColor)
-                        }
+                        .background(i % 2 == 0 ? theme.cardBackgroundColor : theme.tableAlternateRowColor)
                     }
-                    .cornerRadius(12)
                 }
-                .frame(height: min(CGFloat(sortedLogs.count * 40 + 50), 600)) // 動態高度，最大 600
                 .cornerRadius(12)
             }
         }
         .padding(.horizontal, 2)
-        .frame(minHeight: 100) // 確保最小高度
     }
 
     private var sortedLogs: [ChargedLogEntry] {
