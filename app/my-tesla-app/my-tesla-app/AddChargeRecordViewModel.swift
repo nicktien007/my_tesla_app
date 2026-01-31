@@ -141,8 +141,8 @@ class AddChargeRecordViewModel: ObservableObject {
         
         // 建立 JSON body
         let body: [String: Any] = [
-            "p": price,
-            "t": type.rawValue,
+            "price": price,
+            "type": type.rawValue,
             "method": "POST"
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
