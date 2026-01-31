@@ -24,6 +24,13 @@
 - **單元測試：** 於 Xcode 執行 `my-tesla-appTests/` 內測試。
 - **UI 測試：** 於 Xcode 執行 `my-tesla-appUITests/` 內測試。
 - **範例資料：** 開發/測試可用 `spec/example/` 內的 mock 資料。
+- **測試指令：** ：
+```
+cd /Users/nick/NickTien/Github/my_tesla_app/app/my-tesla-app && \
+xcodebuild test \
+  -scheme MyTesla \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+```
 
 ## 專案慣例
 - Swift 檔案型別名稱用 PascalCase，變數/函式用 camelCase。
