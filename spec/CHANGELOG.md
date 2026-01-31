@@ -22,6 +22,37 @@
   - 更新 `AddChargeRecordViewModel.swift` 實作
   - 更新 `手動新增充電紀錄.md` 規格書
 
+### Fixed
+- **修復新增充電紀錄 API 回應解析錯誤**
+  - 修正 `AddChargeRecordResponse.data` 型別定義，支援混合型別（數字與字串）
+  - 解決 API 回傳成功但 App 顯示網路錯誤的問題
+
+---
+
+## [1.4.1] - 2026-02-01
+
+### Added
+- **首頁列表新增 J1772 充電類型篩選**
+  - 新增 J1772 至充電類型篩選選項
+  - 使用 SF Symbol `ev.plug.ac.type.1` 圖示
+  - 更新 `typeDisplayName` 函數支援 J1772 顯示
+
+### Fixed
+- **修正空資料時表格高度問題**
+  - 限制表格最大高度為 600pt，避免資料過多時過長
+  - 設定最小高度 100pt，確保空資料時視覺穩定
+  - 改善 ScrollView 在無資料時的拉伸行為
+
+### Changed
+- **新增充電紀錄介面優化**
+  - 加深 placeholder 色彩（從 `#B4B4B9` 調整為 `#96969B`）提升識別度
+  - 使用自訂 Segmented Control 取代系統原生元件
+  - 支援手勢滑動切換充電類型
+  - 增加充電類型選擇器高度至 44pt
+  - 統一使用主題紫色（accentPurple）提升視覺一致性
+  - 新增 `segmentedTrackColor` 主題色彩屬性
+  - 深色模式底色加深，淺色模式使用 System Gray 提升對比度
+
 ---
 
 ## [1.4.0] - 2026-02-01

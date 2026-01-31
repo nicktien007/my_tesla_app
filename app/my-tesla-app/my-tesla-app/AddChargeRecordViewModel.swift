@@ -25,11 +25,36 @@ enum ChargeType: String, CaseIterable, Identifiable {
     }
 }
 
+/// API 回應 Data 模型（支援混合型別）
+struct AddChargeRecordResponseData: Codable {
+    let price: Double?
+    let type: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case price
+        case type
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        // 支援 price 為 Double 或 String
+        if let priceDouble = try? container.decode(Double.self, forKey: .price) {
+            price = priceDouble
+        } else if let priceString = try? container.decode(String.self, forKey: .price),
+                  let priceValue = Double(priceString) {
+            price = priceValue
+        } else {
+            price = nil
+        }
+        type = try? container.decode(String.self, forKey: .type)
+    }
+}
+
 /// API 回應模型
 struct AddChargeRecordResponse: Codable {
     let status: String
     let code: Int
-    let data: [String: String]?
+    let data: AddChargeRecordResponseData?
     let message: String
     
     var isSuccess: Bool {
