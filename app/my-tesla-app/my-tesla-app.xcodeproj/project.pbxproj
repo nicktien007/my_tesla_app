@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		01CCC8522E3370EF00D6BEA6 /* my-tesla-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "my-tesla-app.app"; path = MyTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		01CCC85F2E3370F100D6BEA6 /* my-tesla-appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "my-tesla-appTests.xctest"; path = MyTeslaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		01CCC8692E3370F100D6BEA6 /* my-tesla-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "my-tesla-appUITests.xctest"; path = MyTeslaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC8522E3370EF00D6BEA6 /* MyTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC85F2E3370F100D6BEA6 /* MyTeslaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyTeslaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC8692E3370F100D6BEA6 /* MyTeslaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyTeslaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		01CCC8532E3370EF00D6BEA6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				01CCC8522E3370EF00D6BEA6 /* my-tesla-app.app */,
-				01CCC85F2E3370F100D6BEA6 /* my-tesla-appTests.xctest */,
-				01CCC8692E3370F100D6BEA6 /* my-tesla-appUITests.xctest */,
+				01CCC8522E3370EF00D6BEA6 /* MyTesla.app */,
+				01CCC85F2E3370F100D6BEA6 /* MyTeslaTests.xctest */,
+				01CCC8692E3370F100D6BEA6 /* MyTeslaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -114,7 +114,7 @@
 			packageProductDependencies = (
 			);
 			productName = MyTesla;
-			productReference = 01CCC8522E3370EF00D6BEA6 /* my-tesla-app.app */;
+			productReference = 01CCC8522E3370EF00D6BEA6 /* MyTesla.app */;
 			productType = "com.apple.product-type.application";
 		};
 		01CCC85E2E3370F100D6BEA6 /* MyTeslaTests */ = {
@@ -137,7 +137,7 @@
 			packageProductDependencies = (
 			);
 			productName = MyTeslaTests;
-			productReference = 01CCC85F2E3370F100D6BEA6 /* my-tesla-appTests.xctest */;
+			productReference = 01CCC85F2E3370F100D6BEA6 /* MyTeslaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		01CCC8682E3370F100D6BEA6 /* MyTeslaUITests */ = {
@@ -160,7 +160,7 @@
 			packageProductDependencies = (
 			);
 			productName = MyTeslaUITests;
-			productReference = 01CCC8692E3370F100D6BEA6 /* my-tesla-appUITests.xctest */;
+			productReference = 01CCC8692E3370F100D6BEA6 /* MyTeslaUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -171,7 +171,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					01CCC8512E3370EF00D6BEA6 = {
 						CreatedOnToolsVersion = 16.4;
@@ -304,6 +304,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = X82645ZH95;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -327,6 +328,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -367,6 +369,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = X82645ZH95;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -383,6 +386,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -395,7 +399,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = X82645ZH95;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -423,7 +426,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = X82645ZH95;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -458,7 +460,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/my-tesla-app.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/my-tesla-app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyTesla.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyTesla";
 			};
 			name = Debug;
 		};
@@ -476,7 +478,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/my-tesla-app.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/my-tesla-app";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyTesla.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyTesla";
 			};
 			name = Release;
 		};
