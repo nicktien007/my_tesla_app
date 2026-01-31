@@ -46,6 +46,9 @@ struct AddChargeRecordView: View {
             }
             .navigationTitle("新增充電紀錄")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(theme.cardBackgroundColor, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarColorScheme(theme.mode == .dark ? .dark : .light, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("取消") {
@@ -73,13 +76,24 @@ struct AddChargeRecordView: View {
                 .font(.system(size: 15, weight: .medium))
             
             // 數字輸入框
-            TextField("輸入價格", text: $viewModel.priceText)
-                .keyboardType(.decimalPad)
-                .padding()
-                .background(theme.inputBackgroundColor)
-                .cornerRadius(12)
-                .foregroundColor(theme.primaryTextColor)
-                .font(.system(size: 18))
+            ZStack(alignment: .leading) {
+                if viewModel.priceText.isEmpty {
+                    Text("輸入價格")
+                        .foregroundColor(theme.placeholderColor)
+                        .padding(.leading, 4)
+                }
+                TextField("", text: $viewModel.priceText)
+                    .keyboardType(.decimalPad)
+            }
+            .padding()
+            .background(theme.inputBackgroundColor)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(theme.inputBorderColor, lineWidth: 1)
+            )
+            .cornerRadius(12)
+            .foregroundColor(theme.primaryTextColor)
+            .font(.system(size: 18))
             
             // 常用價格選項
             Text("常用價格")
@@ -98,13 +112,17 @@ struct AddChargeRecordView: View {
                     }) {
                         Text(formatPriceDisplay(price))
                             .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(isSelectedPrice(price) ? .white : .blue)
+                            .foregroundColor(isSelectedPrice(price) ? .white : AppTheme.accentPurple)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
                             .background(
                                 isSelectedPrice(price)
                                     ? AppTheme.accentPurple
                                     : theme.inputBackgroundColor
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(isSelectedPrice(price) ? Color.clear : theme.inputBorderColor, lineWidth: 1)
                             )
                             .cornerRadius(8)
                     }
@@ -120,13 +138,13 @@ struct AddChargeRecordView: View {
                 .foregroundColor(theme.secondaryTextColor)
                 .font(.system(size: 15, weight: .medium))
             
-            Picker("充電類型", selection: $viewModel.selectedChargeType) {
-                ForEach(ChargeType.allCases) { type in
-                    Text(type.displayName).tag(type)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.vertical, 4)
+            CustomSegmentedControl(
+                selection: $viewModel.selectedChargeType,
+                options: ChargeType.allCases,
+                trackColor: theme.segmentedTrackColor,
+                selectedColor: AppTheme.accentPurple,
+                textColor: theme.primaryTextColor
+            )
         }
     }
     
@@ -179,5 +197,71 @@ struct AddChargeRecordView_Previews: PreviewProvider {
     static var previews: some View {
         AddChargeRecordView()
             .preferredColorScheme(.dark)
+    }
+}
+
+// MARK: - Custom Segmented Control
+struct CustomSegmentedControl<T: Equatable & Identifiable & Hashable>: View where T.ID == String {
+    @Binding var selection: T
+    let options: [T]
+    let trackColor: Color
+    let selectedColor: Color
+    let textColor: Color
+    
+    // Display Name Helper
+    private func displayName(for option: T) -> String {
+        if let type = option as? ChargeType {
+            return type.displayName
+        }
+        return "\(option)"
+    }
+    
+    var body: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let count = CGFloat(options.count)
+            let segmentWidth = width / count
+            
+            ZStack(alignment: .leading) {
+                // Track Background
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(trackColor)
+                
+                // Selected Thumb
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(selectedColor)
+                    .frame(width: segmentWidth - 4, height: 40) // Height - padding
+                    .offset(x: (CGFloat(selectedIndex) * segmentWidth) + 2)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selection)
+                
+                // Labels
+                HStack(spacing: 0) {
+                    ForEach(options, id: \.id) { option in
+                        Text(displayName(for: option))
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(selection == option ? .white : textColor)
+                            .frame(width: segmentWidth, height: 44)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selection = option
+                            }
+                    }
+                }
+            }
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        let index = Int((value.location.x / width) * count)
+                        if index >= 0 && index < options.count {
+                            selection = options[index]
+                        }
+                    }
+            )
+        }
+        .frame(height: 44)
+    }
+    
+    private var selectedIndex: Int {
+        options.firstIndex(of: selection) ?? 0
     }
 }

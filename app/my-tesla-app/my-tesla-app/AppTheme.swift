@@ -84,7 +84,37 @@ class AppTheme: ObservableObject {
         case .dark:
             return Color(red: 35/255, green: 38/255, blue: 47/255)
         case .light:
-            return Color(red: 242/255, green: 242/255, blue: 247/255)
+            return Color.white
+        }
+    }
+    
+    // MARK: - 輸入框邊框色
+    var inputBorderColor: Color {
+        switch mode {
+        case .dark:
+            return Color.clear
+        case .light:
+            return Color(red: 200/255, green: 200/255, blue: 205/255)
+        }
+    }
+    
+    // MARK: - Placeholder 色彩
+    var placeholderColor: Color {
+        switch mode {
+        case .dark:
+            return Color.gray
+        case .light:
+            return Color(red: 150/255, green: 150/255, blue: 155/255) // Darkened from 180
+        }
+    }
+    
+    // MARK: - Segmented Control Track 色彩
+    var segmentedTrackColor: Color {
+        switch mode {
+        case .dark:
+            return Color(red: 20/255, green: 20/255, blue: 25/255) // Darker than card
+        case .light:
+            return Color(red: 235/255, green: 235/255, blue: 240/255) // Safe light gray
         }
     }
     
