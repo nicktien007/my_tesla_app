@@ -21,6 +21,7 @@ struct ContentView: View {
     @ObservedObject private var viewModel = ChargedLogViewModel()
     @StateObject private var statisticsViewModel = StatisticsViewModel()
     @State private var selectedTab = 0 // 0: 紀錄, 1: 統計
+    @State private var showAddRecordSheet = false // 新增充電紀錄 Sheet
 
     var body: some View {
         ZStack {
@@ -34,6 +35,35 @@ struct ContentView: View {
                 .padding(.bottom, 32)
                 .padding(.horizontal, 8)
             }
+            
+            // FAB 浮動按鈕（僅在紀錄 Tab 顯示）
+            if selectedTab == 0 {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            showAddRecordSheet = true
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 24, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 56, height: 56)
+                                .background(Color(red: 94/255, green: 96/255, blue: 206/255))
+                                .clipShape(Circle())
+                                .shadow(color: Color.black.opacity(0.3), radius: 4, x: 0, y: 2)
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 20)
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showAddRecordSheet) {
+            AddChargeRecordView(onSuccess: {
+                // 成功後重新載入資料
+                viewModel.manualRefresh()
+            })
         }
         .onAppear {
             viewModel.loadLogs()
