@@ -44,11 +44,27 @@ struct StatisticsView: View {
                         // 統計摘要卡片
                         summarySection
                         
-                        // 月度充電量圖表
-                        MonthlyChargedChart(data: viewModel.monthlyChargedData, theme: theme)
+                        // 月度充電量/費用圖表（支援切換）
+                        MonthlyChargedChart(
+                            chargedData: viewModel.monthlyChargedData,
+                            costData: viewModel.monthlyCostData,
+                            theme: theme
+                        )
                         
-                        // 效率與費用趨勢圖
-                        EfficiencyVsCostChart(data: viewModel.efficiencyVsCostData, theme: theme)
+                        // 充電來源分布圓餅圖
+                        ChargeSourcePieChart(
+                            acKWh: viewModel.chargeSourceStats.acKWh,
+                            dcKWh: viewModel.chargeSourceStats.dcKWh,
+                            acCost: viewModel.chargeSourceStats.acCost,
+                            dcCost: viewModel.chargeSourceStats.dcCost,
+                            theme: theme
+                        )
+                        
+                        // 電耗效率趨勢圖（時間序列）
+                        EfficiencyTrendChart(data: viewModel.efficiencyTrendData, theme: theme)
+                        
+                        // 每公里成本趨勢圖（時間序列）
+                        CostPerKmTrendChart(data: viewModel.costPerKmTrendData, theme: theme)
                     }
                     .padding(.bottom, 20)
                 }
@@ -146,9 +162,10 @@ struct StatisticsView: View {
             )
             
             StatisticsSummaryCard(
-                title: "平均電耗",
-                value: String(format: "%.2f km/kWh", viewModel.averageEfficiency),
+                title: "平均成本",
+                value: String(format: "$%.2f/km", viewModel.averageCostPerKm),
                 subtitle: "期間平均值",
+                secondaryValue: String(format: "%.2f km/kWh", viewModel.averageEfficiency),
                 color: Color.orange,
                 theme: theme
             )

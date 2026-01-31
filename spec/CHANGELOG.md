@@ -8,6 +8,17 @@
 
 ## [Unreleased]
 
+### Added
+- **統計頁面全面優化**
+  - 新增「每公里成本」指標（$/km）於統計摘要卡片
+  - 新增「電耗效率趨勢圖」時間序列折線圖
+  - 新增「每公里成本趨勢圖」時間序列折線圖
+  - 新增「充電來源分布」圓餅圖（AC vs DC）
+  - 優化月度充電量圖表，支援 kWh/$ 切換顯示
+  - 異常值顏色標註（電耗 <4.0 紅色、>5.5 綠色）
+  - 移除舊 EfficiencyVsCostChart 混淆圖表
+  - 相關檔案：`ChartViews.swift`、`StatisticsViewModel.swift`、`StatisticsView.swift`
+
 ### Changed
 - **手動新增充電紀錄 API 參數名稱改用完整形式**
   - 將 API 參數從縮寫改為完整名稱：`p` → `price`、`t` → `type`

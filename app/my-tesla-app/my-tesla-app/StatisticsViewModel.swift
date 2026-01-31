@@ -155,17 +155,65 @@ class StatisticsViewModel: ObservableObject {
     
     // 月度費用資料（用於圖表）
     var monthlyCostData: [(month: String, value: Double)] {
-        return filteredStatistics.map { entry in
-            let monthDisplay = "\(entry.year)/\(entry.month)"
+        let stats = filteredStatistics.sorted {
+            let aKey = (Int($0.year) ?? 0) * 100 + (Int($0.month) ?? 0)
+            let bKey = (Int($1.year) ?? 0) * 100 + (Int($1.month) ?? 0)
+            return aKey < bKey
+        }
+        // 判斷是否跨年（與 monthlyChargedData 保持一致）
+        let years = Set(stats.map { $0.year })
+        let showYear = years.count > 1
+        return stats.map { entry in
+            let yearShort = String(entry.year.suffix(2))
+            let monthDisplay = showYear ? "\(yearShort)/\(entry.month)" : "\(entry.month)"
             return (month: monthDisplay, value: entry.totalCostValue)
         }
     }
     
-    // 效率 vs 費用資料（用於圖表）
-    var efficiencyVsCostData: [(efficiency: Double, cost: Double, month: String)] {
-        return filteredStatistics.map { entry in
-            let monthDisplay = "\(entry.year)/\(entry.month)"
-            return (efficiency: entry.avgEfficiencyValue, cost: entry.totalCostValue, month: monthDisplay)
+    // MARK: - P0 新增：每公里成本相關計算
+    
+    // 平均每公里成本
+    var averageCostPerKm: Double {
+        guard totalMileage > 0 else { return 0 }
+        return totalCost / totalMileage
+    }
+    
+    // 電耗效率趨勢資料（用於時間序列圖表）
+    var efficiencyTrendData: [(month: String, efficiency: Double)] {
+        let stats = filteredStatistics.sorted {
+            let aKey = (Int($0.year) ?? 0) * 100 + (Int($0.month) ?? 0)
+            let bKey = (Int($1.year) ?? 0) * 100 + (Int($1.month) ?? 0)
+            return aKey < bKey
+        }
+        // 判斷是否跨年
+        let years = Set(stats.map { $0.year })
+        let showYear = years.count > 1
+        return stats.compactMap { entry in
+            let efficiency = entry.avgEfficiencyValue
+            guard efficiency > 0 else { return nil }
+            let yearShort = String(entry.year.suffix(2))
+            let monthDisplay = showYear ? "\(yearShort)/\(entry.month)" : "\(entry.month)"
+            return (month: monthDisplay, efficiency: efficiency)
+        }
+    }
+    
+    // 每公里成本趨勢資料（用於時間序列圖表）
+    var costPerKmTrendData: [(month: String, costPerKm: Double)] {
+        let stats = filteredStatistics.sorted {
+            let aKey = (Int($0.year) ?? 0) * 100 + (Int($0.month) ?? 0)
+            let bKey = (Int($1.year) ?? 0) * 100 + (Int($1.month) ?? 0)
+            return aKey < bKey
+        }
+        // 判斷是否跨年
+        let years = Set(stats.map { $0.year })
+        let showYear = years.count > 1
+        return stats.compactMap { entry in
+            let mileage = entry.stageMileageValue
+            let cost = entry.totalCostValue
+            guard mileage > 0 else { return nil }
+            let yearShort = String(entry.year.suffix(2))
+            let monthDisplay = showYear ? "\(yearShort)/\(entry.month)" : "\(entry.month)"
+            return (month: monthDisplay, costPerKm: cost / mileage)
         }
     }
     
@@ -195,5 +243,34 @@ class StatisticsViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             self.filterTip = ""
         }
+    }
+    
+    // MARK: - P1: 充電來源統計（AC vs DC）
+    
+    // 充電來源統計結構
+    struct ChargeSourceStats {
+        var acKWh: Double = 0
+        var dcKWh: Double = 0
+        var acCost: Double = 0
+        var dcCost: Double = 0
+    }
+    
+    // 充電來源統計資料（模擬資料，待後端API支援）
+    // 目前假設 90% AC、10% DC
+    var chargeSourceStats: ChargeSourceStats {
+        // 從總量推算（待後端提供API後替換為實際資料）
+        let totalKWh = totalChargedKWh
+        let totalCostValue = totalCost
+        
+        // 假設比例（待後端支援後修改）
+        let acRatio = 0.9
+        let dcRatio = 0.1
+        
+        return ChargeSourceStats(
+            acKWh: totalKWh * acRatio,
+            dcKWh: totalKWh * dcRatio,
+            acCost: totalCostValue * acRatio * 0.8, // AC 費率較低
+            dcCost: totalCostValue * dcRatio * 2.0  // DC 費率較高
+        )
     }
 }
