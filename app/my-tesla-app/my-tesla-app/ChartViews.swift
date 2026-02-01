@@ -6,6 +6,8 @@ struct MonthlyChargedChart: View {
     let costData: [(month: String, value: Double)]
     @ObservedObject var theme: AppTheme
     
+    @State private var selectedIndex: Int? = nil
+    
     enum DisplayMode: String, CaseIterable {
         case kWh = "kWh"
         case cost = "$"
@@ -79,34 +81,60 @@ struct MonthlyChargedChart: View {
                     .foregroundColor(theme.secondaryTextColor)
                     .frame(maxWidth: .infinity, minHeight: 120)
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(alignment: .bottom, spacing: 6) {
-                        ForEach(Array(currentData.enumerated()), id: \.offset) { index, item in
-                            VStack(spacing: 4) {
-                                // 數值標籤
-                                Text(formatValue(item.value))
-                                    .font(.system(size: 10))
-                                    .foregroundColor(theme.secondaryTextColor)
-                                
-                                // 條狀圖
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(barGradient)
-                                    .frame(width: 24, height: max(4, (item.value / maxValue) * 80))
-                                
-                                // 月份標籤
-                                Text(formatMonth(item.month))
-                                    .font(.system(size: 9))
-                                    .foregroundColor(theme.secondaryTextColor)
-                                    .rotationEffect(.degrees(-45))
-                                    .frame(width: 35, height: 25)
-                                    .fixedSize(horizontal: true, vertical: false)
+                ZStack(alignment: .top) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(alignment: .bottom, spacing: 6) {
+                            ForEach(Array(currentData.enumerated()), id: \.offset) { index, item in
+                                VStack(spacing: 4) {
+                                    // 數值標籤
+                                    Text(formatValue(item.value))
+                                        .font(.system(size: 10))
+                                        .foregroundColor(theme.secondaryTextColor)
+                                    
+                                    // 條狀圖
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(barGradient)
+                                        .frame(width: 24, height: max(4, (item.value / maxValue) * 80))
+                                        .onTapGesture {
+                                            selectedIndex = index
+                                        }
+                                    
+                                    // 月份標籤
+                                    Text(formatMonth(item.month))
+                                        .font(.system(size: 9))
+                                        .foregroundColor(theme.secondaryTextColor)
+                                        .rotationEffect(.degrees(-45))
+                                        .frame(width: 35, height: 25)
+                                        .fixedSize(horizontal: true, vertical: false)
+                                }
+                                .frame(width: 45)
                             }
-                            .frame(width: 45)
+                        }
+                        .padding(.horizontal, 8)
+                    }
+                    .frame(height: 120)
+                    
+                    // 懸浮提示
+                    if let index = selectedIndex, index < currentData.count {
+                        let item = currentData[index]
+                        VStack(spacing: 4) {
+                            Text(formatMonth(item.month))
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(theme.primaryTextColor)
+                            Text(formatValue(item.value))
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(displayMode == .kWh ? AppTheme.accentPurple : AppTheme.teslaRed)
+                        }
+                        .padding(8)
+                        .background(theme.cardBackgroundColor.opacity(0.95))
+                        .cornerRadius(8)
+                        .shadow(radius: 4)
+                        .transition(.opacity)
+                        .onTapGesture {
+                            selectedIndex = nil
                         }
                     }
-                    .padding(.horizontal, 8)
                 }
-                .frame(height: 120)
             }
         }
         .padding()
@@ -276,6 +304,8 @@ struct EfficiencyTrendChart: View {
     let data: [(month: String, efficiency: Double)]
     @ObservedObject var theme: AppTheme
     
+    @State private var selectedIndex: Int? = nil
+    
     // 異常值閾值
     private let lowThreshold: Double = 4.0
     private let highThreshold: Double = 5.5
@@ -303,31 +333,54 @@ struct EfficiencyTrendChart: View {
                     .foregroundColor(theme.secondaryTextColor)
                     .frame(maxWidth: .infinity, minHeight: 120)
             } else {
-                GeometryReader { geometry in
-                    let chartWidth = geometry.size.width - 50
-                    let chartHeight = geometry.size.height - 40
+                ZStack(alignment: .top) {
+                    GeometryReader { geometry in
+                        let chartWidth = geometry.size.width - 50
+                        let chartHeight = geometry.size.height - 40
+                        
+                        ZStack {
+                            // 背景網格
+                            drawGrid(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // 警示線（低於閾值）
+                            drawWarningLine(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // 折線
+                            drawLine(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // 資料點（含異常標註）
+                            drawPoints(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // Y 軸標籤
+                            drawYAxisLabels(chartHeight: chartHeight)
+                            
+                            // X 軸標籤
+                            drawXAxisLabels(chartWidth: chartWidth, chartHeight: chartHeight, geometry: geometry)
+                        }
+                    }
+                    .frame(height: 150)
                     
-                    ZStack {
-                        // 背景網格
-                        drawGrid(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // 警示線（低於閾值）
-                        drawWarningLine(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // 折線
-                        drawLine(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // 資料點（含異常標註）
-                        drawPoints(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // Y 軸標籤
-                        drawYAxisLabels(chartHeight: chartHeight)
-                        
-                        // X 軸標籤
-                        drawXAxisLabels(chartWidth: chartWidth, chartHeight: chartHeight, geometry: geometry)
+                    // 懸浮提示
+                    if let index = selectedIndex, index < data.count {
+                        let point = data[index]
+                        VStack(spacing: 4) {
+                            Text(formatMonth(point.month))
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(theme.primaryTextColor)
+                            Text(String(format: "%.2f km/kWh", point.efficiency))
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(pointColor(for: point.efficiency))
+                        }
+                        .padding(8)
+                        .background(theme.cardBackgroundColor.opacity(0.95))
+                        .cornerRadius(8)
+                        .shadow(radius: 4)
+                        .transition(.opacity)
+                        .onTapGesture {
+                            selectedIndex = nil
+                        }
                     }
                 }
-                .frame(height: 150)
                 
                 // 圖例
                 HStack(spacing: 16) {
@@ -410,6 +463,9 @@ struct EfficiencyTrendChart: View {
                 .fill(pointColor(for: point.efficiency))
                 .frame(width: isAbnormal(point.efficiency) ? 10 : 8, height: isAbnormal(point.efficiency) ? 10 : 8)
                 .position(x: x, y: y)
+                .onTapGesture {
+                    selectedIndex = index
+                }
         }
     }
     
@@ -468,6 +524,8 @@ struct CostPerKmTrendChart: View {
     let data: [(month: String, costPerKm: Double)]
     @ObservedObject var theme: AppTheme
     
+    @State private var selectedIndex: Int? = nil
+    
     private var maxCost: Double {
         max(data.map { $0.costPerKm }.max() ?? 1.0, 1.0)
     }
@@ -491,28 +549,51 @@ struct CostPerKmTrendChart: View {
                     .foregroundColor(theme.secondaryTextColor)
                     .frame(maxWidth: .infinity, minHeight: 120)
             } else {
-                GeometryReader { geometry in
-                    let chartWidth = geometry.size.width - 50
-                    let chartHeight = geometry.size.height - 40
+                ZStack(alignment: .top) {
+                    GeometryReader { geometry in
+                        let chartWidth = geometry.size.width - 50
+                        let chartHeight = geometry.size.height - 40
+                        
+                        ZStack {
+                            // 背景網格
+                            drawGrid(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // 折線
+                            drawLine(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // 資料點
+                            drawPoints(chartWidth: chartWidth, chartHeight: chartHeight)
+                            
+                            // Y 軸標籤
+                            drawYAxisLabels(chartHeight: chartHeight)
+                            
+                            // X 軸標籤
+                            drawXAxisLabels(chartWidth: chartWidth, chartHeight: chartHeight, geometry: geometry)
+                        }
+                    }
+                    .frame(height: 150)
                     
-                    ZStack {
-                        // 背景網格
-                        drawGrid(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // 折線
-                        drawLine(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // 資料點
-                        drawPoints(chartWidth: chartWidth, chartHeight: chartHeight)
-                        
-                        // Y 軸標籤
-                        drawYAxisLabels(chartHeight: chartHeight)
-                        
-                        // X 軸標籤
-                        drawXAxisLabels(chartWidth: chartWidth, chartHeight: chartHeight, geometry: geometry)
+                    // 懸浮提示
+                    if let index = selectedIndex, index < data.count {
+                        let point = data[index]
+                        VStack(spacing: 4) {
+                            Text(formatMonth(point.month))
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundColor(theme.primaryTextColor)
+                            Text(String(format: "$%.2f/km", point.costPerKm))
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(AppTheme.teslaRed)
+                        }
+                        .padding(8)
+                        .background(theme.cardBackgroundColor.opacity(0.95))
+                        .cornerRadius(8)
+                        .shadow(radius: 4)
+                        .transition(.opacity)
+                        .onTapGesture {
+                            selectedIndex = nil
+                        }
                     }
                 }
-                .frame(height: 150)
                 
                 // 圖例
                 HStack(spacing: 16) {
@@ -570,6 +651,9 @@ struct CostPerKmTrendChart: View {
                 .fill(AppTheme.teslaRed)
                 .frame(width: 8, height: 8)
                 .position(x: x, y: y)
+                .onTapGesture {
+                    selectedIndex = index
+                }
         }
     }
     
@@ -634,13 +718,15 @@ struct StatisticsSummaryCard: View {
                     .foregroundColor(theme.primaryTextColor.opacity(0.8))
             }
             
+            Spacer(minLength: 0)
+            
             if let subtitle = subtitle {
                 Text(subtitle)
                     .font(.system(size: 12))
                     .foregroundColor(color)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 110, alignment: .leading)
         .padding()
         .background(theme.cardBackgroundColor)
         .cornerRadius(12)
