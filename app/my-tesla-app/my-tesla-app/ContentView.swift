@@ -19,7 +19,7 @@ struct ContentView: View {
     @ObservedObject private var theme = AppTheme.shared
     @State private var sortKey: ChargedLogSortKey = .date
     @State private var sortOrder: SortOrder = .descending
-    @ObservedObject private var viewModel = ChargedLogViewModel()
+    @StateObject private var viewModel = ChargedLogViewModel()
     @StateObject private var statisticsViewModel = StatisticsViewModel()
     @State private var selectedTab = 0 // 0: 紀錄, 1: 統計
     @State private var showAddRecordSheet = false // 新增充電紀錄 Sheet
@@ -71,8 +71,21 @@ struct ContentView: View {
             viewModel.loadLogs()
         }
         .onChange(of: scenePhase) { newPhase in
-            if newPhase == .active {
+            switch newPhase {
+            case .active:
+                // 進入前景：自動刷新資料
                 viewModel.refreshIfNeeded()
+                statisticsViewModel.loadStatistics()
+                print("☀️ App entered foreground")
+                
+            case .background, .inactive:
+                // 進入背景：取消延遲任務與網路請求
+                statisticsViewModel.cancelPendingTasks()
+                viewModel.cancelPendingRequests()
+                print("🌙 App entered background, tasks cancelled")
+                
+            @unknown default:
+                break
             }
         }
     }
@@ -500,10 +513,9 @@ struct DatePickerSheet: View {
                 get: { date },
                 set: { newValue in
                     date = newValue
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        onSelect()
-                        dismiss()
-                    }
+                    // 移除延遲，直接執行（避免背景喚醒）
+                    onSelect()
+                    dismiss()
                 }
             ), in: range ?? Date.distantPast...Date.distantFuture, displayedComponents: [.date])
                 .datePickerStyle(.graphical)

@@ -13,6 +13,9 @@ class StatisticsViewModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
+    // 延遲任務管理
+    private var clearTipWorkItem: DispatchWorkItem?
+    
     enum TimeRangeFilter: String, CaseIterable, Identifiable {
         case threeMonths = "3months"
         case sixMonths = "6months"
@@ -238,11 +241,31 @@ class StatisticsViewModel: ObservableObject {
         }
     }
     
-    // 清除提示訊息的延遲方法
+    // 清除提示訊息的延遲方法（可取消）
     private func clearTipAfterDelay() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.filterTip = ""
+        // 先取消之前的任務
+        clearTipWorkItem?.cancel()
+        
+        // 建立新的可取消任務
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.filterTip = ""
         }
+        clearTipWorkItem = workItem
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: workItem)
+    }
+    
+    // 取消所有延遲任務
+    func cancelPendingTasks() {
+        clearTipWorkItem?.cancel()
+        clearTipWorkItem = nil
+    }
+    
+    // 確保資源清理
+    deinit {
+        cancelPendingTasks()
+        cancellables.removeAll()
+        print("✅ StatisticsViewModel deinitialized")
     }
     
     // MARK: - P1: 充電來源統計（AC vs DC）

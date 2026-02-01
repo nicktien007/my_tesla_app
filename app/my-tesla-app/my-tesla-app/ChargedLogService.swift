@@ -33,15 +33,16 @@ class ChargedLogService {
         let values: [[String]]
     }
 
-    func fetchChargedLogs(completion: @escaping (Result<[ChargedLogEntry], Error>) -> Void) {
+    @discardableResult
+    func fetchChargedLogs(completion: @escaping (Result<[ChargedLogEntry], Error>) -> Void) -> URLSessionDataTask? {
         guard let url = URL(string: chargedLogEndpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
-            return
+            return nil
         }
 
         print("ChargedLog API URL: \(url.absoluteString)")
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -57,18 +58,21 @@ class ChargedLogService {
             } catch {
                 completion(.failure(error))
             }
-        }.resume()
+        }
+        task.resume()
+        return task
     }
 
-    func fetchStatistics(completion: @escaping (Result<[StatisticsEntry], Error>) -> Void) {
+    @discardableResult
+    func fetchStatistics(completion: @escaping (Result<[StatisticsEntry], Error>) -> Void) -> URLSessionDataTask? {
         guard let url = URL(string: statisticsEndpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
-            return
+            return nil
         }
         
         print("Statistics API URL: \(url.absoluteString)")
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -84,7 +88,9 @@ class ChargedLogService {
             } catch {
                 completion(.failure(error))
             }
-        }.resume()
+        }
+        task.resume()
+        return task
     }
 
     private func parseRows(_ rows: [[String]]) -> [ChargedLogEntry] {

@@ -20,6 +20,25 @@
   - 相關檔案：`ChartViews.swift`、`StatisticsViewModel.swift`、`StatisticsView.swift`
 
 ### Changed
+- **背景耗電優化（P0 關鍵修復）** 🔴
+  - 修正延遲任務導致背景喚醒問題
+    - `StatisticsViewModel.swift`：改用可取消的 `DispatchWorkItem`，新增 `cancelPendingTasks()`
+    - `ContentView.swift`：移除 DatePicker 的 0.1 秒延遲，直接執行
+  - 修正 ViewModel 生命週期問題
+    - `ContentView.swift`：將 `@ObservedObject` 改為 `@StateObject`，避免重複建立實例
+  - 新增網路請求取消機制
+    - `ChargedLogViewModel.swift`：新增 `currentTask` 與 `cancelPendingRequests()`，進入背景時取消請求
+    - `ChargedLogService.swift`：兩個 fetch 方法都改為回傳 `URLSessionDataTask?`，支援取消
+  - 優化自動刷新策略
+    - `ChargedLogViewModel.swift`：最小刷新間隔從 10 分鐘延長為 30 分鐘（600s → 1800s）
+  - 加強背景狀態管理
+    - `ContentView.swift`：完整實作 `scenePhase` 處理，進入背景時取消所有延遲任務與網路請求
+  - 新增資源清理機制
+    - 所有 ViewModel 加入 `deinit` 確保資源正確釋放
+  - **預期效果**：背景喚醒次數從 10-20 次/30分鐘 降至 0-2 次，背景活動時間從 30-60 秒降至 < 5 秒
+  - 相關文件：`spec/feat/背景耗電優化.md`
+
+### Changed
 - **手動新增充電紀錄 API 參數名稱改用完整形式**
   - 將 API 參數從縮寫改為完整名稱：`p` → `price`、`t` → `type`
   - 提升程式碼可讀性與 API 語意清晰度

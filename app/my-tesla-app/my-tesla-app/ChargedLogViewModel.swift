@@ -4,8 +4,11 @@ import Combine
 class ChargedLogViewModel: ObservableObject {
     /// 上次進入前景的時間
     private var lastActiveDate: Date? = nil
-    /// 最小自動刷新間隔（秒）
-    let minRefreshInterval: TimeInterval = 600 // 10 分鐘
+    /// 最小自動刷新間隔（秒）- 改為 30 分鐘減少背景刷新
+    let minRefreshInterval: TimeInterval = 1800 // 30 分鐘
+    
+    /// 當前進行中的網路請求
+    private var currentTask: URLSessionDataTask?
     @Published var logs: [ChargedLogEntry] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -122,17 +125,40 @@ class ChargedLogViewModel: ObservableObject {
     func loadLogs() {
         isLoading = true
         errorMessage = nil
-        ChargedLogService.shared.fetchChargedLogs { [weak self] result in
+        
+        // 先取消之前的請求
+        currentTask?.cancel()
+        
+        // 取得 task 並儲存
+        currentTask = ChargedLogService.shared.fetchChargedLogs { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
+                self?.currentTask = nil // 請求完成，清空
+                
                 switch result {
                 case .success(let logs):
                     self?.logs = logs
                 case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+                    // 區分取消與真實錯誤
+                    if (error as? URLError)?.code != .cancelled {
+                        self?.errorMessage = error.localizedDescription
+                    }
                 }
             }
         }
+    }
+    
+    /// 取消進行中的網路請求
+    func cancelPendingRequests() {
+        currentTask?.cancel()
+        currentTask = nil
+        isLoading = false
+    }
+    
+    /// 確保資源清理
+    deinit {
+        cancelPendingRequests()
+        print("✅ ChargedLogViewModel deinitialized")
     }
 
     /// 進入前景時自動更新查詢時間並刷新資料（有最小間隔限制）
