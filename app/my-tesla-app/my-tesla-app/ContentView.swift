@@ -306,13 +306,18 @@ struct ContentView: View {
                     Text(String(format: "%.1f kWh", viewModel.currentPeriodKWh))
                         .font(.system(size: 32, weight: .bold))
                         .foregroundColor(theme.primaryTextColor)
+                    
+                    Spacer(minLength: 0)
+                    
                     Text(viewModel.kWhComparisonText)
                         .font(.system(size: 14))
                         .foregroundColor(AppTheme.teslaRed)
                 }
+                .frame(maxWidth: .infinity, minHeight: 130, alignment: .leading)
                 .padding()
                 .background(theme.cardBackgroundColor)
                 .cornerRadius(18)
+                
                 VStack(alignment: .leading, spacing: 4) {
                     Text("查詢區間充電費用")
                         .font(.system(size: 15))
@@ -329,10 +334,14 @@ struct ContentView: View {
                             .font(.system(size: 14))
                             .foregroundColor(AppTheme.teslaRed)
                     }
+                    
+                    Spacer(minLength: 0)
+                    
                     Text(viewModel.costComparisonText)
                         .font(.system(size: 14))
                         .foregroundColor(AppTheme.teslaRed)
                 }
+                .frame(maxWidth: .infinity, minHeight: 130, alignment: .leading)
                 .padding()
                 .background(theme.cardBackgroundColor)
                 .cornerRadius(18)
