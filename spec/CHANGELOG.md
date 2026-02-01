@@ -38,6 +38,19 @@
   - **預期效果**：背景喚醒次數從 10-20 次/30分鐘 降至 0-2 次，背景活動時間從 30-60 秒降至 < 5 秒
   - 相關文件：`spec/feat/背景耗電優化.md`
 
+- **背景耗電優化（P1 重要優化）** 🟡
+  - URLSession 配置優化
+    - `ChargedLogService.swift`：新增自訂 `urlSession` 配置
+    - 設定 request timeout 30 秒、resource timeout 60 秒
+    - 關閉延長背景閒置模式（`shouldUseExtendedBackgroundIdleMode = false`）
+  - Combine 訂閱生命週期管理
+    - `StatisticsViewModel.swift`：新增 `isSubscriptionActive` flag
+    - 新增 `pauseSubscriptions()` / `resumeSubscriptions()` 方法
+    - 修改 `.sink` 訂閱加入 active 檢查，背景時不觸發回調
+    - `ContentView.swift`：進入前景時恢復訂閱，進入背景時暫停訂閱
+  - **預期效果**：進一步減少背景 CPU 使用率與網路活動
+  - 相關文件：`spec/feat/背景耗電優化.md`
+
 ### Changed
 - **手動新增充電紀錄 API 參數名稱改用完整形式**
   - 將 API 參數從縮寫改為完整名稱：`p` → `price`、`t` → `type`

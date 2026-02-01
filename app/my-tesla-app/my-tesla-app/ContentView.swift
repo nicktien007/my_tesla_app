@@ -73,14 +73,15 @@ struct ContentView: View {
         .onChange(of: scenePhase) { newPhase in
             switch newPhase {
             case .active:
-                // 進入前景：自動刷新資料
+                // 進入前景：恢復訂閱並自動刷新資料
+                statisticsViewModel.resumeSubscriptions()
                 viewModel.refreshIfNeeded()
                 statisticsViewModel.loadStatistics()
                 print("☀️ App entered foreground")
                 
             case .background, .inactive:
-                // 進入背景：取消延遲任務與網路請求
-                statisticsViewModel.cancelPendingTasks()
+                // 進入背景：暫停訂閱、取消延遲任務與網路請求
+                statisticsViewModel.pauseSubscriptions()
                 viewModel.cancelPendingRequests()
                 print("🌙 App entered background, tasks cancelled")
                 

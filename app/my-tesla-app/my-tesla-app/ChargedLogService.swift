@@ -8,6 +8,20 @@ class ChargedLogService {
     private let statisticsRange = "統計!A:H"
 
     private let apiKey: String
+    
+    // P1-1: 自訂 URLSession 配置
+    private lazy var urlSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30  // 請求超時 30 秒
+        config.timeoutIntervalForResource = 60 // 資源超時 60 秒
+        config.waitsForConnectivity = true
+        config.requestCachePolicy = .returnCacheDataElseLoad
+        
+        // 背景策略：不使用延長背景閒置模式
+        config.shouldUseExtendedBackgroundIdleMode = false
+        
+        return URLSession(configuration: config)
+    }()
 
     init() {
         // 讀取 Config.plist 內 GOOGLE_SHEETS_API_KEY
@@ -42,7 +56,7 @@ class ChargedLogService {
 
         print("ChargedLog API URL: \(url.absoluteString)")
 
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = urlSession.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -72,7 +86,7 @@ class ChargedLogService {
         
         print("Statistics API URL: \(url.absoluteString)")
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        let task = urlSession.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return

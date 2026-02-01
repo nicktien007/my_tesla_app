@@ -16,6 +16,9 @@ class StatisticsViewModel: ObservableObject {
     // 延遲任務管理
     private var clearTipWorkItem: DispatchWorkItem?
     
+    // P1-2: Combine 訂閱生命週期管理
+    private var isSubscriptionActive = true
+    
     enum TimeRangeFilter: String, CaseIterable, Identifiable {
         case threeMonths = "3months"
         case sixMonths = "6months"
@@ -42,7 +45,7 @@ class StatisticsViewModel: ObservableObject {
         // 監聽篩選條件變化，實現自動切換
         $selectedYear
             .sink { [weak self] year in
-                guard let self = self else { return }
+                guard let self = self, self.isSubscriptionActive else { return }
                 if !year.isEmpty && year != "all" {
                     // 選擇特定年份時，自動設為全部時間範圍
                     if self.selectedTimeRange != .all {
@@ -56,7 +59,7 @@ class StatisticsViewModel: ObservableObject {
         
         $selectedTimeRange
             .sink { [weak self] timeRange in
-                guard let self = self else { return }
+                guard let self = self, self.isSubscriptionActive else { return }
                 if timeRange != .all {
                     // 選擇特定時間範圍時，自動設為全部年份
                     if !self.selectedYear.isEmpty && self.selectedYear != "all" {
@@ -259,6 +262,17 @@ class StatisticsViewModel: ObservableObject {
     func cancelPendingTasks() {
         clearTipWorkItem?.cancel()
         clearTipWorkItem = nil
+    }
+    
+    // P1-2: 暫停訂閱（進入背景時呼叫）
+    func pauseSubscriptions() {
+        isSubscriptionActive = false
+        cancelPendingTasks()
+    }
+    
+    // P1-2: 恢復訂閱（進入前景時呼叫）
+    func resumeSubscriptions() {
+        isSubscriptionActive = true
     }
     
     // 確保資源清理
