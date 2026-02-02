@@ -15,7 +15,9 @@ class ChargedLogService {
         config.timeoutIntervalForRequest = 30  // 請求超時 30 秒
         config.timeoutIntervalForResource = 60 // 資源超時 60 秒
         config.waitsForConnectivity = true
-        config.requestCachePolicy = .returnCacheDataElseLoad
+        // 使用適度的快取策略，平衡性能與資料新鮮度
+        config.requestCachePolicy = .useProtocolCachePolicy
+        config.urlCache = URLCache(memoryCapacity: 10 * 1024 * 1024, diskCapacity: 50 * 1024 * 1024)
         
         // 背景策略：不使用延長背景閒置模式
         config.shouldUseExtendedBackgroundIdleMode = false
@@ -48,15 +50,21 @@ class ChargedLogService {
     }
 
     @discardableResult
-    func fetchChargedLogs(completion: @escaping (Result<[ChargedLogEntry], Error>) -> Void) -> URLSessionDataTask? {
+    func fetchChargedLogs(forceRefresh: Bool = false, completion: @escaping (Result<[ChargedLogEntry], Error>) -> Void) -> URLSessionDataTask? {
         guard let url = URL(string: chargedLogEndpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return nil
         }
 
-        print("ChargedLog API URL: \(url.absoluteString)")
+        print("ChargedLog API URL: \(url.absoluteString) (forceRefresh: \(forceRefresh))")
 
-        let task = urlSession.dataTask(with: url) { data, response, error in
+        var request = URLRequest(url: url)
+        // 手動刷新時忽略快取，否則使用預設策略
+        if forceRefresh {
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+        }
+
+        let task = urlSession.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -78,15 +86,21 @@ class ChargedLogService {
     }
 
     @discardableResult
-    func fetchStatistics(completion: @escaping (Result<[StatisticsEntry], Error>) -> Void) -> URLSessionDataTask? {
+    func fetchStatistics(forceRefresh: Bool = false, completion: @escaping (Result<[StatisticsEntry], Error>) -> Void) -> URLSessionDataTask? {
         guard let url = URL(string: statisticsEndpoint) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return nil
         }
         
-        print("Statistics API URL: \(url.absoluteString)")
+        print("Statistics API URL: \(url.absoluteString) (forceRefresh: \(forceRefresh))")
         
-        let task = urlSession.dataTask(with: url) { data, response, error in
+        var request = URLRequest(url: url)
+        // 手動刷新時忽略快取，否則使用預設策略
+        if forceRefresh {
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+        }
+        
+        let task = urlSession.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return

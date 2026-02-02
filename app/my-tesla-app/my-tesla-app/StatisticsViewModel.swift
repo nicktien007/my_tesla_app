@@ -223,11 +223,11 @@ class StatisticsViewModel: ObservableObject {
         }
     }
     
-    func loadStatistics() {
+    func loadStatistics(forceRefresh: Bool = false) {
         isLoading = true
         errorMessage = nil
         
-        ChargedLogService.shared.fetchStatistics { [weak self] result in
+        ChargedLogService.shared.fetchStatistics(forceRefresh: forceRefresh) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 switch result {

@@ -122,7 +122,7 @@ class ChargedLogViewModel: ObservableObject {
         return "較前期 (\(prevStartStr)~\(prevEndStr)) \(sign)\(String(format: "%.1f", percent))%"
     }
 
-    func loadLogs() {
+    func loadLogs(forceRefresh: Bool = false) {
         isLoading = true
         errorMessage = nil
         
@@ -130,7 +130,7 @@ class ChargedLogViewModel: ObservableObject {
         currentTask?.cancel()
         
         // 取得 task 並儲存
-        currentTask = ChargedLogService.shared.fetchChargedLogs { [weak self] result in
+        currentTask = ChargedLogService.shared.fetchChargedLogs(forceRefresh: forceRefresh) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 self?.currentTask = nil // 請求完成，清空
@@ -171,7 +171,7 @@ class ChargedLogViewModel: ObservableObject {
         }
         lastActiveDate = now
         self.endDate = now
-        loadLogs()
+        loadLogs(forceRefresh: false) // 自動刷新允許使用快取
     }
 
     /// 手動刷新，無間隔限制，startDate 也重設為一個月前
@@ -180,7 +180,7 @@ class ChargedLogViewModel: ObservableObject {
         lastActiveDate = now
         self.endDate = now
         self.startDate = Calendar.current.date(byAdding: .month, value: -1, to: now) ?? now
-        loadLogs()
+        loadLogs(forceRefresh: true) // 手動刷新強制從伺服器取得最新資料
     }
 }
 
